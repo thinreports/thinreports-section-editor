@@ -1,5 +1,7 @@
 # Thinreports Section Editor
 
+[![Test](https://github.com/thinreports/thinreports-section-editor/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/thinreports/thinreports-section-editor/actions/workflows/test.yml)
+
 An editor for editing a [section format](https://github.com/thinreports/thinreports/blob/main/getting-started/section-format.md) template.
 
 ## Current Status
