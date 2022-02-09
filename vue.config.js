@@ -4,7 +4,6 @@ module.exports = {
     electronBuilder: {
       builderOptions: {
         appId: 'com.thinreports.section-editor',
-        productName: 'ThinreportsEditor-section',
         publish: null,
         mac: {
           artifactName: '${productName}-${version}-darwin.${ext}',
