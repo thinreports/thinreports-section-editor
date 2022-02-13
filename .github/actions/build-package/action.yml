@@ -3,6 +3,7 @@ description: Setting up environment and building Electron package
 
 runs:
   using: composite
+
   steps:
     - name: Install Node.js
       uses: actions/setup-node@v1
@@ -10,7 +11,9 @@ runs:
         node-version: '13'
 
     - name: Install npm packages
+      shell: bash
       run: npm install
 
     - name: Build package
+      shell: bash
       run: npm run electron:build
