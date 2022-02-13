@@ -38,8 +38,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = import('fs');
-            const path = import('path');
+            const fs = require('fs');
+            const path = require('path');
             const packagePath = fs.readdirSync('dist_electron').find(file => file.includes('${{ matrix.package-ext }}'));
 
             core.setOutput('PACKAGE_PATH', path.join('dist_electron', packagePath));
