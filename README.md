@@ -6,25 +6,31 @@ A template editor for [Thinreports](https://github.com/thinreports/thinreports) 
 
 ## Current Status
 
-Under development
+Under development for [v1.0.0](https://github.com/thinreports/thinreports/issues/25).
 
-## Prerequisites
+## Installation
+
+Currently, you can only use the v1.0.0 development version package.
+Please download the package from [the v1.0.0-dev release page](https://github.com/thinreports/thinreports-section-editor/releases/tag/v1.0.0-dev).
+
+## Development
+
+### Prerequisites
 
 - Node.js >= 14.0
 - npm >= 6.0
 
-## Installation
-
-There is currently no production version package available. If you want to use the Section Editor, you will need to build and run the development version.
+### Setting up
 
 ```
-npm i
+npm install
+```
+
+### Launching the package for development
+
+```
 npm run electron:serve
 ```
-
-## Development
-
-See `npx vue-cli-service help` for other available commands.
 
 ### Running tests
 
