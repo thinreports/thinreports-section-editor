@@ -48,7 +48,7 @@ jobs:
           echo ::set-output name=package_name::$package_name
 
       - name: Create an archive file for the package
-        run: zip -j ${{ steps.set-package-info.outputs.package_name }} ${{ steps.set-package-info.outputs.package_path }}
+        run: zip -j ${{ steps.set-package-info.outputs.package_name }}.zip ${{ steps.set-package-info.outputs.package_path }}
 
       - name: Deploy development build
         uses: WebFreak001/deploy-nightly@v1.1.0
