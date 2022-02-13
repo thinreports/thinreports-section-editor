@@ -44,8 +44,8 @@ jobs:
         run: |
           package_path=`find dist_electron/ -name *${{ matrix.package-ext }}`
           package_name=`basename $package_path ${{ matrix.package-ext }}`
-          echo ::set-output name=package_path:$package_path
-          echo ::set-output name=package_name:$package_name
+          echo ::set-output name=package_path::$package_path
+          echo ::set-output name=package_name::$package_name
 
       - name: Create an archive file for the package
         run: zip -j ${{ steps.set-package-info.outputs.package_name }} ${{ steps.set-package-info.outputs.package_path }}
