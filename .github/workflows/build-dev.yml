@@ -1,0 +1,62 @@
+name: Build development package
+
+on:
+  # Runs every Monday at 1:00
+  schedule:
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+jobs:
+  build-dev:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: macos-latest
+            package-ext: .dmg
+          - os: ubuntu-latest
+            package-ext: .AppImage
+          - os: windows-latest
+            package-ext: .exe
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build package
+        uses: ./.github/actions/build-package
+
+        # For example, in the following environment:
+        #
+        # dist_electron/
+        #   `- thinreports-section-editor-1.0.0-dev-linux.AppImage
+
+        # The following variables are set:
+        #
+        #   package_path = "dist_electron/thinreports-section-editor-1.0.0-dev-linux.AppImage"
+        #   package_name = "thinreports-section-editor-1.0.0-dev-linux"
+        #
+      - name: Set the package info to a variable
+        id: set-package-info
+        run: |
+          package_path=`find dist_electron/ -name *${{ matrix.package-ext }}`
+          package_name=`basename $package_path ${{ matrix.package-ext }}`
+          echo ::set-output name=package_path:$package_path
+          echo ::set-output name=package_name:$package_name
+
+      - name: Create an archive file for the package
+        run: zip -j ${{ steps.set-package-info.outputs.package_name }} ${{ steps.set-package-info.outputs.package_path }}
+
+      - name: Deploy development build
+        uses: WebFreak001/deploy-nightly@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: https://uploads.github.com/repos/thinreports/thinreports-section-editor/releases/59428559/assets{?name,label}
+          release_id: 59428559
+          asset_path: ./${{ steps.set-package-info.outputs.package_name }}.zip
+          asset_name: ./${{ steps.set-package-info.outputs.package_name }}-$$.zip
+          asset_content_type: application/zip
