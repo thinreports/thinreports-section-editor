@@ -1,5 +1,6 @@
-/* eslint no-template-curly-in-string: 0 */
-module.exports = {
+const { defineConfig } = require('@vue/cli-service');
+module.exports = defineConfig({
+  transpileDependencies: true,
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
@@ -30,4 +31,4 @@ module.exports = {
       enableInSFC: false
     }
   }
-};
+});
