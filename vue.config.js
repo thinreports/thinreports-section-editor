@@ -30,5 +30,8 @@ module.exports = defineConfig({
       localeDir: 'locales',
       enableInSFC: false
     }
+  },
+  configureWebpack: {
+    target: 'electron-main'
   }
 });
