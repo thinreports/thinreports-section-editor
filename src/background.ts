@@ -17,7 +17,8 @@ async function createWindow () {
     height: 1000,
     webPreferences: {
       // TODO: Migrate to ipcRenderer.send
-      nodeIntegration: !!process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: !!(process.env
+        .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
       enableRemoteModule: true,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
