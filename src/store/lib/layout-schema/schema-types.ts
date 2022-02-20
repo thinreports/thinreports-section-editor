@@ -1,4 +1,4 @@
-type LayoutSchema = {
+export type LayoutSchema = {
   schemaVersion: string;
   lastModifiedBy: string;
   title: string;
@@ -18,34 +18,34 @@ type LayoutSchema = {
   sections: AnySectionSchema[];
 };
 
-type AnySectionSchema = HeaderSectionSchema | DetailSectionSchema | FooterSectionSchema;
+export type AnySectionSchema = HeaderSectionSchema | DetailSectionSchema | FooterSectionSchema;
 
-type SectionSchema = {
+export type SectionSchema = {
   id: string;
   height: number;
   autoStretch: boolean;
   items: AnyItemSchema[];
 };
 
-type HeaderSectionSchema = SectionSchema & {
+export type HeaderSectionSchema = SectionSchema & {
   type: 'header';
   everyPage: boolean;
   display: boolean;
 };
 
-type DetailSectionSchema = SectionSchema & {
+export type DetailSectionSchema = SectionSchema & {
   type: 'detail';
 };
 
-type FooterSectionSchema = SectionSchema & {
+export type FooterSectionSchema = SectionSchema & {
   type: 'footer';
   display: boolean;
 };
 
-type GraphicItemSchema = RectItemSchema | EllipseItemSchema | LineItemSchema | TextItemSchema | TextBlockItemSchema | ImageBlockItemSchema | ImageItemSchema;
-type AnyItemSchema = GraphicItemSchema | StackViewItemSchema;
+export type GraphicItemSchema = RectItemSchema | EllipseItemSchema | LineItemSchema | TextItemSchema | TextBlockItemSchema | ImageBlockItemSchema | ImageItemSchema;
+export type AnyItemSchema = GraphicItemSchema | StackViewItemSchema;
 
-type ItemSchema = {
+export type ItemSchema = {
   id: string;
   display: boolean;
   description: string;
@@ -53,13 +53,13 @@ type ItemSchema = {
   affectBottomMargin: boolean;
 };
 
-type ItemBorderStyleSchema = {
+export type ItemBorderStyleSchema = {
   borderWidth: number;
   borderColor: string;
   borderStyle: 'solid' | 'dashed' | 'dotted';
 };
 
-type ItemTextStyleSchema = {
+export type ItemTextStyleSchema = {
   fontFamily: ['Helvetica' | 'Courier New' | 'Times New Roman' | 'IPAMincho' | 'IPAPMincho' | 'IPAGothic' | 'IPAPGothic'];
   fontSize: number;
   color: string;
@@ -71,14 +71,14 @@ type ItemTextStyleSchema = {
   letterSpacing: number | '';
 };
 
-type BoundsItemSchema = ItemSchema & {
+export type BoundsItemSchema = ItemSchema & {
   x: number;
   y: number;
   width: number;
   height: number;
 };
 
-type RectItemSchema = BoundsItemSchema & {
+export type RectItemSchema = BoundsItemSchema & {
   type: 'rect';
   borderRadius: number;
   style: ItemBorderStyleSchema & {
@@ -86,7 +86,7 @@ type RectItemSchema = BoundsItemSchema & {
   };
 };
 
-type EllipseItemSchema = ItemSchema & {
+export type EllipseItemSchema = ItemSchema & {
   type: 'ellipse';
   cx: number;
   cy: number;
@@ -97,7 +97,7 @@ type EllipseItemSchema = ItemSchema & {
   };
 };
 
-type LineItemSchema = ItemSchema & {
+export type LineItemSchema = ItemSchema & {
   type: 'line';
   x1: number;
   y1: number;
@@ -106,13 +106,13 @@ type LineItemSchema = ItemSchema & {
   style: ItemBorderStyleSchema;
 };
 
-type TextItemSchema = BoundsItemSchema & {
+export type TextItemSchema = BoundsItemSchema & {
   type: 'text';
   texts: string[];
   style: ItemTextStyleSchema;
 };
 
-type TextBlockItemSchema = BoundsItemSchema & {
+export type TextBlockItemSchema = BoundsItemSchema & {
   type: 'text-block';
   referenceId: '';
   value: string;
@@ -126,18 +126,18 @@ type TextBlockItemSchema = BoundsItemSchema & {
   };
 };
 
-type TextBlockFormatNoneSchema = {
+export type TextBlockFormatNoneSchema = {
   type: '';
 };
 
-type TextBlockFormatDatetimeSchema = {
+export type TextBlockFormatDatetimeSchema = {
   type: 'datetime';
   datetime: {
     format: string;
   };
 }
 
-type TextBlockFormatNumberSchema = {
+export type TextBlockFormatNumberSchema = {
   type: 'number';
   number: {
     delimiter: string;
@@ -145,7 +145,7 @@ type TextBlockFormatNumberSchema = {
   };
 };
 
-type TextBlockFormatPaddingSchema = {
+export type TextBlockFormatPaddingSchema = {
   type: 'padding';
   padding: {
     length: number;
@@ -154,7 +154,7 @@ type TextBlockFormatPaddingSchema = {
   };
 };
 
-type ImageBlockItemSchema = BoundsItemSchema & {
+export type ImageBlockItemSchema = BoundsItemSchema & {
   type: 'image-block';
   style: {
     positionX: 'left' | 'center' | 'right';
@@ -162,7 +162,7 @@ type ImageBlockItemSchema = BoundsItemSchema & {
   };
 };
 
-type ImageItemSchema = BoundsItemSchema & {
+export type ImageItemSchema = BoundsItemSchema & {
   type: 'image';
   data: {
     mimeType: 'image/png' | 'image/jpeg';
@@ -170,7 +170,7 @@ type ImageItemSchema = BoundsItemSchema & {
   };
 };
 
-type StackViewItemSchema = ItemSchema & {
+export type StackViewItemSchema = ItemSchema & {
   type: 'stack-view';
   x: number;
   y: number;
@@ -179,7 +179,7 @@ type StackViewItemSchema = ItemSchema & {
   rows: StackViewRowSchema[];
 };
 
-type StackViewRowSchema = {
+export type StackViewRowSchema = {
   id: string;
   height: number;
   autoStretch: boolean;

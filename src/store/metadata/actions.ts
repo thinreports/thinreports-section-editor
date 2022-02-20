@@ -18,4 +18,4 @@ export class Actions extends ActionsBase<Metadata, Getters, Mutations> {
       this.mutations.setHistoryPointer(lastSavedHistoryPointer);
     }
   }
-};
+}

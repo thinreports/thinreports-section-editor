@@ -1,5 +1,6 @@
 import _cloneDeep from 'lodash.clonedeep';
 import { DeepReadonly } from 'utility-types';
+import { AnyItemSchema, AnySectionSchema, GraphicItemSchema, LayoutSchema, StackViewItemSchema, StackViewRowSchema, TextItemSchema } from './schema-types';
 import { deepChangeToKebabCase } from '@/lib/deep-change-case';
 import { Report, SectionUid, ItemUid, StackViewItem, StackViewRowUid, GraphicItem, AnyUid, TextItem } from '@/types';
 import { SCHEMA_VERSION, EDITOR_VERSION } from '@/versions';

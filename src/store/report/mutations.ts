@@ -309,4 +309,4 @@ export class Mutations extends MutationsBase<Report> {
     item.rx = itemBounds.rx;
     item.ry = itemBounds.ry;
   }
-};
+}

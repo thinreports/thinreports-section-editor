@@ -19,4 +19,4 @@ export class Actions extends ActionsBase<Operator, Getters, Mutations> {
   finishItemDrag () {
     this.mutations.resetItemDragger();
   }
-};
+}

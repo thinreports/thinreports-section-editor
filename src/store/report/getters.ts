@@ -177,7 +177,7 @@ export class Getters extends GettersBase<Report> {
     } else {
       return null;
     }
-  };
+  }
 
   activeItem (): AnyItem | null {
     if (this.state.activeEntity && this.state.activeEntity.type === 'item') {

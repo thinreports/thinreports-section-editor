@@ -38,7 +38,7 @@ class UnexpectedStateError extends Error {
     super();
     this.name = 'UnexpectedStateError';
   }
-};
+}
 
 export default Vue.extend({
   name: 'LayerItemDragger',

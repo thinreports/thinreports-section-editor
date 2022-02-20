@@ -14,10 +14,6 @@
 <script lang="ts">
 import Vue from 'vue';
 
-type Data = {
-  pointerDown: boolean;
-};
-
 export default Vue.extend({
   name: 'CanvasDrawer',
   props: {

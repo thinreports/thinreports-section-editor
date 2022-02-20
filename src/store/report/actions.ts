@@ -637,4 +637,4 @@ export class Actions extends ActionsBase<Report, Getters, Mutations> {
     if (!this.state.activeEntity || this.state.activeEntity.type !== 'item') return;
     this.mutations.bringItemLayerTo({ uid: this.state.activeEntity.uid, destination: 'backward' });
   }
-};
+}

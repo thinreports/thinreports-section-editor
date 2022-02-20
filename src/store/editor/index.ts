@@ -23,4 +23,4 @@ export class Store extends StoreBase<Editor> {
       zoomRate: 1.2
     };
   }
-};
+}

@@ -42,4 +42,4 @@ export class Actions extends ActionsBase<History, Getters, Mutations> {
     this.reset();
     this.push(report);
   }
-};
+}

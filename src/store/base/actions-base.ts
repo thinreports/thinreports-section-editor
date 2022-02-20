@@ -16,4 +16,4 @@ export class ActionsBase<T, G extends GettersBase<T>, M extends MutationsBase<T>
   protected get state (): DeepReadonly<T> {
     return this.stateAccessor() as DeepReadonly<T>;
   }
-};
+}

@@ -27,4 +27,4 @@ export class Mutations extends MutationsBase<Operator> {
       translation: null
     };
   }
-};
+}

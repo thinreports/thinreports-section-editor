@@ -38,4 +38,4 @@ export class Actions extends ActionsBase<RootState, Getters, Mutations> {
       lastSavedHistoryPointer: history.state.pointer
     });
   }
-};
+}

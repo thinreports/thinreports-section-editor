@@ -31,4 +31,4 @@ export class Store extends StoreBase<RootState> {
     this.actions = new Actions(stateAccessor, this.getters, this.mutations, modules);
     this.modules = modules;
   }
-};
+}

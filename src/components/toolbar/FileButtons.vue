@@ -70,8 +70,10 @@ export default Vue.extend({
       });
 
       if (!ajv.validate(layoutJsonSchema, JSON.parse(jsonString))) {
+        /* eslint-disable no-console */
         console.log('Schema:', jsonString);
         console.log('Errors:', JSON.stringify(ajv.errors, null, '   '));
+        /* eslint-enable no-console */
 
         UIkit.notification({
           message: 'Oops! Some error has occurred. (Please show console log)',
