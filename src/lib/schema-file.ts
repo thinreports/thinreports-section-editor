@@ -1,7 +1,7 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { remote } from 'electron';
+import remote from '@electron/remote';
 
 type SchemaOpenOnSuccess = (schema: string, filename: string) => void;
 type SchemaSaveOnSuccess = () => void;

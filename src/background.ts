@@ -1,5 +1,6 @@
 'use strict';
 
+import { initialize as initializeElectron } from '@electron/remote/main';
 import { app, protocol, BrowserWindow, Menu } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
@@ -11,6 +12,8 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 async function createWindow () {
+  initializeElectron();
+
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1500,
@@ -19,7 +22,6 @@ async function createWindow () {
       // TODO: Migrate to ipcRenderer.send
       nodeIntegration: !!(process.env
         .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
-      enableRemoteModule: true,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   });
