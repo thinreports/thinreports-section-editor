@@ -17,8 +17,8 @@ Please download the package from [the v1.0.0-dev release page](https://github.co
 
 ### Prerequisites
 
-- Node.js >= 14.0
-- npm >= 6.0
+- Node.js >= 16.0
+- npm >= 8.0
 
 ### Setting up
 
