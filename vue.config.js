@@ -22,7 +22,7 @@ module.exports = defineConfig({
           icon: 'build/icon.ico'
         }
       },
-      nodeIntegration: true
+      preload: 'src/preload.ts'
     },
     i18n: {
       locale: 'en',
@@ -30,8 +30,5 @@ module.exports = defineConfig({
       localeDir: 'locales',
       enableInSFC: false
     }
-  },
-  configureWebpack: {
-    target: 'electron-main'
   }
 });
