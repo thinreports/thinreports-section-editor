@@ -8,4 +8,4 @@ export class MutationsBase<T> {
   protected get state (): T {
     return this.stateAccessor();
   }
-};
+}

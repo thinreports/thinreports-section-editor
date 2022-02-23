@@ -22,4 +22,4 @@ export class Store extends StoreBase<History> {
       pointer: null
     };
   }
-};
+}

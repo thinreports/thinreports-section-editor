@@ -13,4 +13,4 @@ export class Mutations extends MutationsBase<Editor> {
   setZoomRate (rate: number) {
     this.state.zoomRate = Math.max(rate, 0.5);
   }
-};
+}

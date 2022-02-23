@@ -3,10 +3,6 @@ import { Actions } from '../report/actions';
 
 let lock = false;
 
-type Option = {
-  replace?: boolean;
-};
-
 export function SaveHistory (option?: { replaceCurrentPointer: boolean }) {
   return function (_target: unknown, _propertyKey: unknown, descriptor: PropertyDescriptor) {
     const originalFunction = descriptor.value;
@@ -32,4 +28,4 @@ export function SaveHistory (option?: { replaceCurrentPointer: boolean }) {
 
     return descriptor;
   };
-};
+}

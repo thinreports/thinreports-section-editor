@@ -1,4 +1,4 @@
-import { version } from '../package.json';
+import packageInfo from '../package.json';
 
-export const EDITOR_VERSION = version;
+export const EDITOR_VERSION = packageInfo.version;
 export const SCHEMA_VERSION = '1.0';

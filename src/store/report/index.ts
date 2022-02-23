@@ -39,4 +39,4 @@ export class Store extends StoreBase<Report> {
       layoutGuides: []
     };
   }
-};
+}

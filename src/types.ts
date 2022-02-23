@@ -3,9 +3,9 @@ type Uid<B> = string & B;
 export type ToolType = 'select' | ItemType;
 export type CanvasType = 'section' | 'stack-view-row';
 
-enum SectionUidBrand { _ = 'SectionId' };
-enum StackViewRowUidBrand { _ = 'StackViewRowIdBrand' };
-enum ItemUidBrand { _ = 'ItemId' };
+enum SectionUidBrand { _ = 'SectionId' }
+enum StackViewRowUidBrand { _ = 'StackViewRowIdBrand' }
+enum ItemUidBrand { _ = 'ItemId' }
 
 export type SectionUid = Uid<SectionUidBrand>;
 export type StackViewRowUid = Uid<StackViewRowUidBrand>;

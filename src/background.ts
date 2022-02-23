@@ -1,6 +1,9 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, Menu } from 'electron';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import { app, protocol, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -10,18 +13,52 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ]);
 
+function initHandlers (win: BrowserWindow) {
+  ipcMain.handle('open-schema-file', () => {
+    const filenames = dialog.showOpenDialogSync(win, {
+      filters: [{ name: 'Thinreports Layout File', extensions: ['tlf'] }],
+      properties: ['openFile'],
+      defaultPath: os.homedir()
+    });
+
+    if (!filenames) return;
+
+    const filename = filenames[0];
+    const schema = fs.readFileSync(filename, { encoding: 'utf-8' });
+
+    return { schema, filename };
+  });
+
+  ipcMain.handle('save-schema-file', (_e, schema: string, filename: string) => {
+    fs.writeFileSync(filename, schema, { encoding: 'utf-8' });
+  });
+
+  ipcMain.handle('save-schema-file-as', (_e, schema: string, filename?: string) => {
+    const defaultPath = filename || path.join(os.homedir(), 'template.tlf');
+    const newFilename = dialog.showSaveDialogSync(win, {
+      filters: [{ name: 'Thinreports Layout File', extensions: ['tlf'] }],
+      defaultPath
+    });
+
+    if (!newFilename) return;
+
+    fs.writeFileSync(newFilename, schema, { encoding: 'utf-8' });
+
+    return newFilename;
+  });
+}
+
 async function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 1500,
     height: 1000,
     webPreferences: {
-      // TODO: Migrate to ipcRenderer.send
-      nodeIntegration: !!process.env.ELECTRON_NODE_INTEGRATION,
-      enableRemoteModule: true,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      preload: path.join(__dirname, 'preload.js')
     }
   });
+
+  initHandlers(win);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

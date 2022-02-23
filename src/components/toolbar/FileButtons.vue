@@ -25,8 +25,9 @@ import Vue from 'vue';
 import { report, root, metadata } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
-import { schemaSave, schemaSaveAs, schemaOpen } from '@/lib/schema-file';
 import layoutJsonSchema from '@/store/lib/layout-schema/schema.json';
+
+const { electronAPI } = window;
 
 export default Vue.extend({
   name: 'FileButtons',
@@ -39,7 +40,7 @@ export default Vue.extend({
       location.reload();
     },
 
-    save () {
+    async save () {
       const schema = report.getters.toSchemaJSON();
 
       if (!this.validateSchema(schema)) return;
@@ -47,20 +48,22 @@ export default Vue.extend({
       const currentFilename = metadata.getters.filename();
 
       if (currentFilename === null) {
-        schemaSaveAs(schema, null, (filename) => {
+        const filename = await electronAPI.saveSchemaFileAs(schema);
+        if (filename) {
           root.actions.saveSchema(filename);
-        });
+        }
       } else {
-        schemaSave(schema, currentFilename, () => {
-          root.actions.saveSchema();
-        });
+        await electronAPI.saveSchemaFile(schema, currentFilename);
+        root.actions.saveSchema();
       }
     },
 
-    open () {
-      schemaOpen((schema, filename) => {
-        root.actions.loadSchema(schema, filename);
-      });
+    async open () {
+      const file = await electronAPI.openSchemaFile();
+
+      if (file) {
+        root.actions.loadSchema(file.schema, file.filename);
+      }
     },
 
     validateSchema (jsonString: string): boolean {
@@ -70,8 +73,10 @@ export default Vue.extend({
       });
 
       if (!ajv.validate(layoutJsonSchema, JSON.parse(jsonString))) {
+        /* eslint-disable no-console */
         console.log('Schema:', jsonString);
         console.log('Errors:', JSON.stringify(ajv.errors, null, '   '));
+        /* eslint-enable no-console */
 
         UIkit.notification({
           message: 'Oops! Some error has occurred. (Please show console log)',

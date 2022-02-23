@@ -30,4 +30,4 @@ export class Actions extends ActionsBase<Editor, Getters, Mutations> {
   zoomOut () {
     this.mutations.setZoomRate(calcMinus(this.state.zoomRate, 0.5));
   }
-};
+}

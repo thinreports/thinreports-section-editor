@@ -10,4 +10,4 @@ export abstract class StoreBase<T> {
   get state () {
     return this.stateAccessor() as DeepReadonly<T>;
   }
-};
+}

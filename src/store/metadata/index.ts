@@ -22,4 +22,4 @@ export class Store extends StoreBase<Metadata> {
       lastSavedHistoryPointer: 0
     };
   }
-};
+}

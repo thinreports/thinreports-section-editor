@@ -33,4 +33,4 @@ export class Mutations extends MutationsBase<History> {
     this.state.histories = [];
     this.state.pointer = null;
   }
-};
+}

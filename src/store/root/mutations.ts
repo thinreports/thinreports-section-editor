@@ -13,4 +13,4 @@ export class Mutations extends MutationsBase<RootState> {
   setReport (report: Report) {
     this.state.report = report;
   }
-};
+}

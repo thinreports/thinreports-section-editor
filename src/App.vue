@@ -39,25 +39,25 @@ export default {
   font-family: "IPAMincho";
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/IPAfont00303/ipam.ttf") format("truetype");
+  src: url("~@/assets/fonts/ipam.ttf") format("truetype");
 }
 @font-face {
   font-family: "IPAPMincho";
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/IPAfont00303/ipamp.ttf") format("truetype");
+  src: url("~@/assets/fonts/ipamp.ttf") format("truetype");
 }
 @font-face {
   font-family: "IPAGothic";
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/IPAfont00303/ipag.ttf") format("truetype");
+  src: url("~@/assets/fonts/ipag.ttf") format("truetype");
 }
 @font-face {
   font-family: "IPAPGothic";
   font-style: normal;
   font-weight: 400;
-  src: url("/fonts/IPAfont00303/ipagp.ttf") format("truetype");
+  src: url("~@/assets/fonts/ipagp.ttf") format("truetype");
 }
 
 :root {

@@ -9,4 +9,4 @@ export class Mutations extends MutationsBase<Metadata> {
   setHistoryPointer (pointer: number | null) {
     this.state.lastSavedHistoryPointer = pointer;
   }
-};
+}
