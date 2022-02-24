@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'plugin:vue/recommended',
-    '@vue/standard',
+    'standard',
     '@vue/typescript/recommended',
     '.eslint-todo.json'
   ],
@@ -26,6 +26,19 @@ module.exports = {
       }
     }
   ],
+  settings: {
+    'import/resolver': {
+      node: {
+        extentions: [
+          '.js',
+          '.jsx',
+          '.mjs',
+          '.ts',
+          '.tsx'
+        ]
+      }
+    }
+  },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
