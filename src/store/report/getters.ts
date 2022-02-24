@@ -251,38 +251,34 @@ export class Getters extends GettersBase<Report> {
     }
   }
 
-  copiedGraphicItem (uid: ItemUid): CopiedGraphicItem {
-    const fromItem = this.findItem(uid);
+  copiedGraphicItem (itemUid: ItemUid): CopiedGraphicItem {
+    const fromItem = this.findItem(itemUid);
 
-    if (fromItem.type === 'stack-view') throw new Error(`GraphicItem(${uid}) is not found`);
+    if (fromItem.type === 'stack-view') throw new Error(`GraphicItem(${itemUid}) is not found`);
 
-    const item = _cloneDeep(fromItem);
-    delete item.uid;
-    return item;
+    const { uid, ...itemWithoutUid } = _cloneDeep(fromItem);
+    return itemWithoutUid;
   }
 
-  copiedStackViewItem (uid: ItemUid): CopiedStackViewItem {
-    const fromItem = this.findItem(uid);
+  copiedStackViewItem (itemUid: ItemUid): CopiedStackViewItem {
+    const fromItem = this.findItem(itemUid);
 
-    if (fromItem.type !== 'stack-view') throw new Error(`StackView(${uid}) is not found`);
+    if (fromItem.type !== 'stack-view') throw new Error(`StackView(${itemUid}) is not found`);
 
-    const item = _cloneDeep(fromItem);
-    delete item.uid;
+    const { uid, ...itemWithoutUid } = _cloneDeep(fromItem);
 
     return {
-      ...item,
-      rows: item.rows.map(uid => this.copiedStackViewRow(uid))
+      ...itemWithoutUid,
+      rows: itemWithoutUid.rows.map(uid => this.copiedStackViewRow(uid))
     };
   }
 
-  copiedStackViewRow (uid: StackViewRowUid): CopiedStackViewRow {
-    const row = _cloneDeep(this.findStackViewRow(uid));
-
-    delete row.uid;
+  copiedStackViewRow (rowUid: StackViewRowUid): CopiedStackViewRow {
+    const { uid, ...rowWithoutUid } = _cloneDeep(this.findStackViewRow(rowUid));
 
     return {
-      ...row,
-      items: row.items.map(uid => this.copiedGraphicItem(uid))
+      ...rowWithoutUid,
+      items: rowWithoutUid.items.map(uid => this.copiedGraphicItem(uid))
     };
   }
 }
