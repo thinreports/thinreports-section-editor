@@ -68,8 +68,7 @@ export default Vue.extend({
 
     validateSchema (jsonString: string): boolean {
       const ajv = new Ajv({
-        multipleOfPrecision: 3,
-        jsonPointers: true
+        multipleOfPrecision: 3
       });
 
       if (!ajv.validate(layoutJsonSchema, JSON.parse(jsonString))) {
