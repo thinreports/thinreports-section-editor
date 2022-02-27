@@ -10,10 +10,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'NodeButton',
+export default defineComponent({
   props: {
     name: {
       type: String,
@@ -28,15 +27,21 @@ export default Vue.extend({
       default: false
     }
   },
-  computed: {
-    label () {
-      return this.id !== '' ? `#${this.id}` : this.name;
-    }
-  },
-  methods: {
-    emitClick () {
-      this.$emit('click');
-    }
+  setup (props, { emit }) {
+    const { name, id } = toRefs(props);
+
+    const label = computed(() => {
+      return id.value !== '' ? `#${id.value}` : name.value;
+    });
+
+    const emitClick = () => {
+      emit('click');
+    };
+
+    return {
+      label,
+      emitClick
+    };
   }
 });
 </script>

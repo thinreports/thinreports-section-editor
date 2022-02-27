@@ -10,10 +10,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'ToolButton',
+export default defineComponent({
   props: {
     active: {
       type: Boolean,
@@ -24,10 +23,14 @@ export default Vue.extend({
       default: ''
     }
   },
-  methods: {
-    click () {
-      this.$emit('click');
-    }
+  setup (_, { emit }) {
+    const click = () => {
+      emit('click');
+    };
+
+    return {
+      click
+    };
   }
 });
 </script>

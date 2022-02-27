@@ -12,10 +12,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, ref } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'CanvasDrawer',
+export default defineComponent({
   props: {
     width: {
       type: Number,
@@ -26,27 +25,30 @@ export default Vue.extend({
       required: true
     }
   },
-  data () {
-    return {
-      pointerDown: false
+  setup (_, { emit }) {
+    const pointerDown = ref(false);
+
+    const emitStartDraw = () => {
+      emit('startDraw');
     };
-  },
-  methods: {
-    emitStartDraw () {
-      this.$emit('startDraw');
-    },
-    onPointerDown () {
-      this.pointerDown = true;
-    },
-    onPointerMove () {
-      if (this.pointerDown) {
-        this.emitStartDraw();
-        this.pointerDown = false;
+    const onPointerDown = () => {
+      pointerDown.value = true;
+    };
+    const onPointerMove = () => {
+      if (pointerDown.value) {
+        emitStartDraw();
+        pointerDown.value = false;
       }
-    },
-    onPointerUp () {
-      this.pointerDown = false;
-    }
+    };
+    const onPointerUp = () => {
+      pointerDown.value = false;
+    };
+
+    return {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp
+    };
   }
 });
 </script>

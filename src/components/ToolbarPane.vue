@@ -5,11 +5,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import ToolSelect from './toolbar/ToolSelect.vue';
 
-export default Vue.extend({
-  name: 'ToolbarPane',
+export default defineComponent({
   components: {
     ToolSelect
   }

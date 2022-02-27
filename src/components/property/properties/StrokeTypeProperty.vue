@@ -8,34 +8,37 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from '@/components/property/properties/base/SelectProperty.vue';
 import { ItemBorderStyle } from '@/types';
 
-export default Vue.extend({
-  name: 'StrokeTypeProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<ItemBorderStyle['borderStyle']>,
+      type: String as () => ItemBorderStyle['borderStyle'],
       required: true
     }
   },
-  computed: {
-    options (): Option<ItemBorderStyle['borderStyle']>[] {
+  setup (_, { emit }) {
+    const options = computed((): Option<ItemBorderStyle['borderStyle']>[] => {
       return [
         { label: this.$tc('label.stroke.type.solid'), value: 'solid' },
         { label: this.$tc('label.stroke.type.dashed'), value: 'dashed' },
         { label: this.$tc('label.stroke.type.dotted'), value: 'dotted' }
       ];
-    }
-  },
-  methods: {
-    update (value: string) {
-      this.$emit('change', value);
-    }
+    });
+
+    const update = (value: string) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent, nextTick, ref } from '@vue/composition-api';
 import { calcDiv, calcMinus, calcMul } from '../lib/strict-calculator';
 import { Translation, Size, Coords } from '../types';
 import LayerItemDragger from './LayerItemDragger.vue';
@@ -47,26 +47,28 @@ import { report, editor, operator } from '@/store';
 
 const REPORT_MARGIN_PX = 60;
 
-type Data = {
-  containerSize: Size | null;
-};
-
-export default Vue.extend({
-  name: 'ReportPane',
+export default defineComponent({
   components: {
     ReportCanvas,
     LayerItemDrawer,
     LayerItemDragger
   },
-  data (): Data {
-    return {
-      containerSize: null
-    };
+  created () {
+    report.actions.addInitialSections();
   },
-  computed: {
-    reportTranslation (): Translation {
-      if (this.width !== null && this.height !== null) {
-        const x = calcMinus(calcDiv(this.width, 2), calcDiv(this.contentSize.width, 2));
+  mounted () {
+    window.addEventListener('resize', recalculateContainerSize);
+    nextTick(() => recalculateContainerSize());
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', recalculateContainerSize);
+  },
+  setup () {
+    const containerSize = ref<Size | null>(null);
+
+    const reportTranslation = computed((): Translation => {
+      if (width.value !== null && height.value !== null) {
+        const x = calcMinus(calcDiv(width.value, 2), calcDiv(contentSize.value.width, 2));
         return {
           x: x < REPORT_MARGIN_PX ? REPORT_MARGIN_PX : x,
           y: REPORT_MARGIN_PX
@@ -74,59 +76,48 @@ export default Vue.extend({
       } else {
         return { x: 0, y: 0 };
       }
-    },
-    reportTransform (): string {
-      const translation = this.reportTranslation;
+    });
+    const reportTransform = computed((): string => {
+      const translation = reportTranslation.value;
       return `translate(${translation.x},${translation.y}) scale(${editor.getters.zoomRate()})`;
-    },
-    viewBox (): string | null {
-      if (this.width !== null && this.height !== null) {
-        return [0, 0, this.width, this.height].join(' ');
+    });
+    const viewBox = computed((): string | null => {
+      if (width.value !== null && height.value !== null) {
+        return [0, 0, width.value, height.value].join(' ');
       } else {
         return null;
       }
-    },
-    minWidth (): string {
-      return this.width !== null ? `${this.width}px` : '100%';
-    },
-    width (): number | null {
-      if (!this.containerSize) return null;
-      return this.containerSize.width < this.contentSize.width + REPORT_MARGIN_PX * 2 ? this.contentSize.width + REPORT_MARGIN_PX * 2 : this.containerSize.width;
-    },
-    height (): number | null {
-      if (!this.containerSize) return null;
-      return (this.containerSize.height < this.contentSize.height + REPORT_MARGIN_PX * 2 ? this.contentSize.height + REPORT_MARGIN_PX * 2 : this.containerSize.height);
-    },
-    isItemDraggerActive: () => operator.state.itemDragger.active,
-    isItemDrawerActive: () => operator.state.itemDrawer.active,
-    contentSize (): Size {
+    });
+    const minWidth = computed((): string => {
+      return width.value !== null ? `${width.value}px` : '100%';
+    });
+    const width = computed((): number | null => {
+      if (!containerSize.value) return null;
+      return containerSize.value.width < contentSize.value.width + REPORT_MARGIN_PX * 2 ? contentSize.value.width + REPORT_MARGIN_PX * 2 : containerSize.value.width;
+    });
+    const height = computed((): number | null => {
+      if (!containerSize.value) return null;
+      return (containerSize.value.height < contentSize.value.height + REPORT_MARGIN_PX * 2 ? contentSize.value.height + REPORT_MARGIN_PX * 2 : containerSize.value.height);
+    });
+    const isItemDraggerActive = computed(() => operator.state.itemDragger.active);
+    const isItemDrawerActive = computed(() => operator.state.itemDrawer.active);
+    const contentSize = computed((): Size => {
       const { width, height } = report.getters.contentSize();
       const zoomRate = editor.getters.zoomRate();
       return {
         width: calcMul(width, zoomRate),
         height: calcMul(height, zoomRate)
       };
-    }
-  },
-  created () {
-    report.actions.addInitialSections();
-  },
-  mounted () {
-    window.addEventListener('resize', this.recalculateContainerSize);
-    this.$nextTick(() => this.recalculateContainerSize());
-  },
-  beforeDestroy () {
-    window.removeEventListener('resize', this.recalculateContainerSize);
-  },
-  methods: {
-    recalculateContainerSize () {
+    });
+
+    const recalculateContainerSize = () => {
       const containerClientRect = (this.$refs.container as HTMLElement).getBoundingClientRect();
-      this.containerSize = {
+      containerSize.value = {
         width: containerClientRect.width,
         height: containerClientRect.height
       };
-    },
-    transformSvgPoint (point: Coords): Coords {
+    };
+    const transformSvgPoint = (point: Coords): Coords => {
       const canvasSvg = this.$refs.canvasSvg as SVGSVGElement;
       const canvas = this.$refs.canvas as SVGGElement;
       const canvasCTM = canvas.getScreenCTM();
@@ -143,7 +134,18 @@ export default Vue.extend({
         x: transformedPoint.x,
         y: transformedPoint.y
       };
-    }
+    };
+
+    return {
+      reportTransform,
+      viewBox,
+      minWidth,
+      width,
+      height,
+      isItemDraggerActive,
+      isItemDrawerActive,
+      transformSvgPoint
+    };
   }
 });
 </script>

@@ -20,18 +20,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
 import { BoundsTransformer } from '../lib/bounds-transformer';
 import { operator, report } from '../store';
 import ItemOutline from './items/ItemOutline.vue';
 import { Coords, BoundingPoints, ItemType } from '@/types';
-
-type Data = {
-  itemType: ItemType | null;
-  itemBounds: BoundingPoints | null;
-  initialPointer: Coords | null;
-  outlineBounds: BoundingPoints | null;
-};
 
 class UnexpectedStateError extends Error {
   constructor () {
@@ -40,8 +33,7 @@ class UnexpectedStateError extends Error {
   }
 }
 
-export default Vue.extend({
-  name: 'LayerItemDragger',
+export default defineComponent({
   components: {
     ItemOutline
   },
@@ -51,76 +43,74 @@ export default Vue.extend({
       required: true
     },
     transformSvgPoint: {
-      type: Function as PropType<(point: Coords) => Coords>,
+      type: (Function as unknown) as () => (point: Coords) => Coords,
       required: true
     }
   },
-  data (): Data {
-    return {
-      itemType: null,
-      itemBounds: null,
-      initialPointer: null,
-      outlineBounds: null
+  setup (props) {
+    const { transformSvgPoint } = toRefs(props);
+
+    const itemType = ref<ItemType | null>(null);
+    const itemBounds = ref<BoundingPoints | null>(null);
+    const initialPointer = ref<Coords | null>(null);
+    const outlineBounds = ref<BoundingPoints | null>(null);
+
+    const isStarted = computed((): boolean => {
+      return initialPointer.value !== null;
+    });
+    const draggerState = computed(() => operator.state.itemDragger);
+
+    const start = (e: MouseEvent) => {
+      const point = transformSvgPoint.value(e);
+
+      if (!draggerState.value.itemUid) throw new UnexpectedStateError();
+
+      const item = report.getters.findItem(draggerState.value.itemUid);
+
+      itemType.value = item.type;
+      itemBounds.value = convertToReportCoords(report.getters.itemBounds(item.uid));
+      outlineBounds.value = { ...itemBounds.value };
+      initialPointer.value = { x: point.x, y: point.y };
     };
-  },
-  computed: {
-    isStarted (): boolean {
-      return this.initialPointer !== null;
-    },
-    draggerState: () => operator.state.itemDragger
-  },
-  methods: {
-    start (e: MouseEvent) {
-      const point = this.transformSvgPoint(e);
+    const drag = (e: MouseEvent) => {
+      if (!isStarted.value) start(e);
 
-      if (!this.draggerState.itemUid) throw new UnexpectedStateError();
+      const point = transformSvgPoint.value(e);
 
-      const item = report.getters.findItem(this.draggerState.itemUid);
-
-      this.itemType = item.type;
-      this.itemBounds = this.convertToReportCoords(report.getters.itemBounds(item.uid));
-      this.outlineBounds = { ...this.itemBounds };
-      this.initialPointer = { x: point.x, y: point.y };
-    },
-    drag (e: MouseEvent) {
-      if (!this.isStarted) this.start(e);
-
-      const point = this.transformSvgPoint(e);
-
-      if (!this.itemBounds || !this.outlineBounds || !this.initialPointer) throw new UnexpectedStateError();
+      if (!itemBounds.value || !outlineBounds.value || !initialPointer.value) throw new UnexpectedStateError();
 
       const deltaPointer = {
-        x: point.x - this.initialPointer.x,
-        y: point.y - this.initialPointer.y
+        x: point.x - initialPointer.value.x,
+        y: point.y - initialPointer.value.y
       };
 
-      this.outlineBounds = {
-        x1: this.itemBounds.x1 + deltaPointer.x,
-        y1: this.itemBounds.y1 + deltaPointer.y,
-        x2: this.itemBounds.x2 + deltaPointer.x,
-        y2: this.itemBounds.y2 + deltaPointer.y
+      outlineBounds.value = {
+        x1: itemBounds.value.x1 + deltaPointer.x,
+        y1: itemBounds.value.y1 + deltaPointer.y,
+        x2: itemBounds.value.x2 + deltaPointer.x,
+        y2: itemBounds.value.y2 + deltaPointer.y
       };
-    },
-    finish () {
-      if (!this.isStarted) {
-        this.cancel();
+    };
+    const finish = () => {
+      if (!isStarted.value) {
+        cancel();
         return;
       }
-      if (!this.outlineBounds) throw new UnexpectedStateError();
+      if (!outlineBounds.value) throw new UnexpectedStateError();
 
-      this.moveItemTo(this.convertToLocalCoords(this.outlineBounds));
+      moveItemTo(convertToLocalCoords(outlineBounds.value));
 
       operator.actions.finishItemDrag();
-    },
-    cancel () {
+    };
+    const cancel = () => {
       operator.actions.finishItemDrag();
-    },
-    moveItemTo (bounds: BoundingPoints) {
-      if (!this.draggerState.itemUid || !this.itemType) throw new UnexpectedStateError();
+    };
+    const moveItemTo = (bounds: BoundingPoints) => {
+      if (!draggerState.value.itemUid || !itemType.value) throw new UnexpectedStateError();
 
-      const payload = { uid: this.draggerState.itemUid, bounds };
+      const payload = { uid: draggerState.value.itemUid, bounds };
 
-      switch (this.itemType) {
+      switch (itemType.value) {
         case 'rect': report.actions.moveRectItemTo(payload); break;
         case 'ellipse': report.actions.moveEllipseItemTo(payload); break;
         case 'line': report.actions.moveLineItemTo(payload); break;
@@ -132,19 +122,27 @@ export default Vue.extend({
         default:
           throw new Error('Not Implemented');
       }
-    },
-    convertToReportCoords (boundingPoints: BoundingPoints): BoundingPoints {
-      const localTranslation = this.draggerState.translation;
+    };
+    const convertToReportCoords = (boundingPoints: BoundingPoints): BoundingPoints => {
+      const localTranslation = draggerState.value.translation;
       if (!localTranslation) throw new UnexpectedStateError();
 
       return new BoundsTransformer(boundingPoints).expand(localTranslation).toBPoints();
-    },
-    convertToLocalCoords (boundingPoints: BoundingPoints): BoundingPoints {
-      const localTranslation = this.draggerState.translation;
+    };
+    const convertToLocalCoords = (boundingPoints: BoundingPoints): BoundingPoints => {
+      const localTranslation = draggerState.value.translation;
       if (!localTranslation) throw new UnexpectedStateError();
 
       return new BoundsTransformer(boundingPoints).relativeFrom(localTranslation).toBPoints();
-    }
+    };
+
+    return {
+      itemType,
+      outlineBounds,
+      isStarted,
+      drag,
+      finish
+    };
   }
 });
 </script>

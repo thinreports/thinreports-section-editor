@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
 import DescriptionProperty from './properties/DescriptionProperty.vue';
@@ -76,8 +76,7 @@ import { BoundsTransformer } from '@/lib/bounds-transformer';
 import { report } from '@/store';
 import { EllipseItem, Bounds, BoundingBox } from '@/types';
 
-export default Vue.extend({
-  name: 'EllipseItemProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -96,60 +95,78 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<EllipseItem>,
+      type: Object as () => EllipseItem,
       required: true
     }
   },
-  computed: {
-    bounds (): BoundingBox {
-      const bounds = report.getters.itemBounds(this.item.uid);
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const bounds = computed((): BoundingBox => {
+      const bounds = report.getters.itemBounds(item.value.uid);
       return new BoundsTransformer(bounds).toBBox();
-    }
-  },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'id', value });
-    },
-    updateDescription (value: string) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'description', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'display', value });
-    },
-    updateX (value: string) {
-      this.updateBounds({ ...this.bounds, x: Number(value) });
-    },
-    updateY (value: string) {
-      this.updateBounds({ ...this.bounds, y: Number(value) });
-    },
-    updateWidth (value: string) {
-      this.updateBounds({ ...this.bounds, width: Number(value) });
-    },
-    updateHeight (value: string) {
-      this.updateBounds({ ...this.bounds, height: Number(value) });
-    },
-    updateBounds (bounds: Bounds) {
+    });
+
+    const updateId = (value: string) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'id', value });
+    };
+    const updateDescription = (value: string) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'description', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateX = (value: string) => {
+      updateBounds({ ...bounds.value, x: Number(value) });
+    };
+    const updateY = (value: string) => {
+      updateBounds({ ...bounds.value, y: Number(value) });
+    };
+    const updateWidth = (value: string) => {
+      updateBounds({ ...bounds.value, width: Number(value) });
+    };
+    const updateHeight = (value: string) => {
+      updateBounds({ ...bounds.value, height: Number(value) });
+    };
+    const updateBounds = (bounds: Bounds) => {
       const bPoints = BoundsTransformer.fromBBox(bounds).toBPoints();
-      report.actions.updateEllipseItemBounds(this.item.uid, bPoints);
-    },
-    updateFollowStretch (value: EllipseItem['followStretch']) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'followStretch', value });
-    },
-    updateAffectBottomMargin (value: boolean) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'affectBottomMargin', value });
-    },
-    updateFillColor (value: string) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, fillColor: value } });
-    },
-    updateBorderColor (value: string) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderColor: value } });
-    },
-    updateBorderWidth (value: string) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderWidth: Number(value) } });
-    },
-    updateBorderStyle (value: EllipseItem['style']['borderStyle']) {
-      report.actions.updateEllipseItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderStyle: value } });
-    }
+      report.actions.updateEllipseItemBounds(item.value.uid, bPoints);
+    };
+    const updateFollowStretch = (value: EllipseItem['followStretch']) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'followStretch', value });
+    };
+    const updateAffectBottomMargin = (value: boolean) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'affectBottomMargin', value });
+    };
+    const updateFillColor = (value: string) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, fillColor: value } });
+    };
+    const updateBorderColor = (value: string) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderColor: value } });
+    };
+    const updateBorderWidth = (value: string) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderWidth: Number(value) } });
+    };
+    const updateBorderStyle = (value: EllipseItem['style']['borderStyle']) => {
+      report.actions.updateEllipseItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderStyle: value } });
+    };
+
+    return {
+      bounds,
+      updateId,
+      updateDescription,
+      updateDisplay,
+      updateX,
+      updateY,
+      updateWidth,
+      updateHeight,
+      updateFollowStretch,
+      updateAffectBottomMargin,
+      updateFillColor,
+      updateBorderColor,
+      updateBorderWidth,
+      updateBorderStyle
+    };
   }
 });
 </script>

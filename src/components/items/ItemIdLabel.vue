@@ -11,12 +11,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 
-export default Vue.extend({
-  name: 'ItemIdLabel',
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -31,14 +30,19 @@ export default Vue.extend({
       required: true
     }
   },
-  computed: {
-    zoomRate: () => editor.getters.zoomRate(),
-    fontSize (): number {
-      return inverseScale(10, this.zoomRate);
-    },
-    left (): number {
-      return inverseScale(3, this.zoomRate);
-    }
+  setup () {
+    const zoomRate = computed(() => editor.getters.zoomRate());
+    const fontSize = computed((): number => {
+      return inverseScale(10, zoomRate.value);
+    });
+    const left = computed((): number => {
+      return inverseScale(3, zoomRate.value);
+    });
+
+    return {
+      fontSize,
+      left
+    };
   }
 });
 </script>

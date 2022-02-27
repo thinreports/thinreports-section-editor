@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import EllipseItemProperties from './EllipseItemProperties.vue';
 import ImageBlockItemProperties from './ImageBlockItemProperties.vue';
 import ImageItemProperties from './ImageItemProperties.vue';
@@ -47,8 +47,7 @@ import TextBlockItemProperties from './TextBlockItemProperties.vue';
 import TextItemProperties from './TextItemProperties.vue';
 import { AnyItem } from '@/types';
 
-export default Vue.extend({
-  name: 'ItemProperties',
+export default defineComponent({
   components: {
     RectItemProperties,
     EllipseItemProperties,
@@ -61,35 +60,48 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<AnyItem>,
+      type: Object as () => AnyItem,
       required: true
     }
   },
-  computed: {
-    isRectItem (): boolean {
-      return this.item.type === 'rect';
-    },
-    isEllipseItem (): boolean {
-      return this.item.type === 'ellipse';
-    },
-    isLineItem (): boolean {
-      return this.item.type === 'line';
-    },
-    isTextItem (): boolean {
-      return this.item.type === 'text';
-    },
-    isTextBlockItem (): boolean {
-      return this.item.type === 'text-block';
-    },
-    isImageItem (): boolean {
-      return this.item.type === 'image';
-    },
-    isImageBlockItem (): boolean {
-      return this.item.type === 'image-block';
-    },
-    isStackViewItem (): boolean {
-      return this.item.type === 'stack-view';
-    }
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const isRectItem = computed((): boolean => {
+      return item.value.type === 'rect';
+    });
+    const isEllipseItem = computed((): boolean => {
+      return item.value.type === 'ellipse';
+    });
+    const isLineItem = computed((): boolean => {
+      return item.value.type === 'line';
+    });
+    const isTextItem = computed((): boolean => {
+      return item.value.type === 'text';
+    });
+    const isTextBlockItem = computed((): boolean => {
+      return item.value.type === 'text-block';
+    });
+    const isImageItem = computed((): boolean => {
+      return item.value.type === 'image';
+    });
+    const isImageBlockItem = computed((): boolean => {
+      return item.value.type === 'image-block';
+    });
+    const isStackViewItem = computed((): boolean => {
+      return item.value.type === 'stack-view';
+    });
+
+    return {
+      isRectItem,
+      isEllipseItem,
+      isLineItem,
+      isTextItem,
+      isTextBlockItem,
+      isImageItem,
+      isImageBlockItem,
+      isStackViewItem
+    };
   }
 });
 </script>

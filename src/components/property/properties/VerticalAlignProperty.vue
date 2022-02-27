@@ -8,34 +8,37 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
 import { VerticalAlign } from '@/types';
 
-export default Vue.extend({
-  name: 'VerticalAlignProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<VerticalAlign>,
+      type: String as () => VerticalAlign,
       required: true
     }
   },
-  computed: {
-    options (): Option<VerticalAlign>[] {
+  setup (_, { emit }) {
+    const options = computed((): Option<VerticalAlign>[] => {
       return [
         { label: this.$tc('label.align.vertical.top'), value: 'top' },
         { label: this.$tc('label.align.vertical.middle'), value: 'middle' },
         { label: this.$tc('label.align.vertical.bottom'), value: 'bottom' }
       ];
-    }
-  },
-  methods: {
-    update (value: VerticalAlign) {
-      this.$emit('change', value);
-    }
+    });
+
+    const update = (value: VerticalAlign) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

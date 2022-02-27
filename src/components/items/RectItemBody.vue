@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { RectItem } from '@/types';
 
 type Style = {
@@ -27,25 +27,30 @@ const STROKE_DASHARRAY_MAP = {
   dotted: '1,1'
 } as const;
 
-export default Vue.extend({
-  name: 'RectItemBody',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<RectItem>,
+      type: Object as () => RectItem,
       required: true
     }
   },
-  computed: {
-    style (): Style {
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const style = computed((): Style => {
       return {
-        strokeWidth: this.item.style.borderWidth,
-        stroke: this.item.style.borderColor,
-        fill: this.item.style.fillColor,
-        strokeDasharray: STROKE_DASHARRAY_MAP[this.item.style.borderStyle],
-        rx: this.item.borderRadius,
-        ry: this.item.borderRadius
+        strokeWidth: item.value.style.borderWidth,
+        stroke: item.value.style.borderColor,
+        fill: item.value.style.fillColor,
+        strokeDasharray: STROKE_DASHARRAY_MAP[item.value.style.borderStyle],
+        rx: item.value.borderRadius,
+        ry: item.value.borderRadius
       };
-    }
+    });
+
+    return {
+      style
+    };
   }
 });
 </script>

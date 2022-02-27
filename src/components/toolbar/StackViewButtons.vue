@@ -19,26 +19,31 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { report } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
 
-export default Vue.extend({
-  name: 'StackViewButtons',
+export default defineComponent({
   components: {
     MenuDropdownSubTree,
     MenuDropdownButton
   },
-  computed: {
-    isEditable (): boolean {
+  setup () {
+    const isEditable = computed((): boolean => {
       return !!report.getters.activeStackView();
-    }
-  },
-  methods: {
-    addRow: () => report.actions.addNewRowToActiveStackView(),
-    moveRowUp: () => report.actions.moveUpActiveStackViewRow(),
-    moveRowDown: () => report.actions.moveDownActiveStackViewRow()
+    });
+
+    const addRow = () => report.actions.addNewRowToActiveStackView();
+    const moveRowUp = () => report.actions.moveUpActiveStackViewRow();
+    const moveRowDown = () => report.actions.moveDownActiveStackViewRow();
+
+    return {
+      isEditable,
+      addRow,
+      moveRowUp,
+      moveRowDown
+    };
   }
 });
 </script>

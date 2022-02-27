@@ -8,23 +8,22 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
 import { BuiltinFontFamily } from '@/types';
 
-export default Vue.extend({
-  name: 'FontFamilyProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<BuiltinFontFamily>,
+      type: String as () => BuiltinFontFamily,
       required: true
     }
   },
-  computed: {
-    options (): Option<BuiltinFontFamily>[] {
+  setup (_, { emit }) {
+    const options = computed((): Option<BuiltinFontFamily>[] => {
       return [
         { label: 'Helvetica', value: 'Helvetica' },
         { label: 'Courier New', value: 'Courier New' },
@@ -34,12 +33,16 @@ export default Vue.extend({
         { label: 'IPA ゴシック', value: 'IPAGothic' },
         { label: 'IPA Pゴシック', value: 'IPAPGothic' }
       ];
-    }
-  },
-  methods: {
-    update (value: BuiltinFontFamily) {
-      this.$emit('change', value);
-    }
+    });
+
+    const update = (value: BuiltinFontFamily) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

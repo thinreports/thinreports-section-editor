@@ -3,20 +3,21 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { ItemType } from '../../types';
 
-export default Vue.extend({
-  name: 'ItemIcon',
+export default defineComponent({
   props: {
     type: {
-      type: String as PropType<ItemType>,
+      type: String as () => ItemType,
       required: true
     }
   },
-  computed: {
-    iconClass () {
-      switch (this.type) {
+  setup (props) {
+    const { type } = toRefs(props);
+
+    const iconClass = computed(() => {
+      switch (type.value) {
         case 'rect': return 'mdi mdi-rectangle-outline';
         case 'ellipse': return 'mdi mdi-ellipse-outline';
         case 'line': return 'mdi mdi-vector-line';
@@ -27,7 +28,11 @@ export default Vue.extend({
         case 'stack-view': return 'mdi mdi-table-column';
         default: throw new Error('Invalid item type');
       }
-    }
+    });
+
+    return {
+      iconClass
+    };
   }
 });
 </script>

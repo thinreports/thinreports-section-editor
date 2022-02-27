@@ -8,11 +8,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import TextProperty from './base/TextProperty.vue';
 
-export default Vue.extend({
-  name: 'KerningProperty',
+export default defineComponent({
   components: {
     TextProperty
   },
@@ -22,10 +21,14 @@ export default Vue.extend({
       default: ''
     }
   },
-  methods: {
-    update (value: string) {
-      this.$emit('change', value);
-    }
+  setup (_, { emit }) {
+    const update = (value: string) => {
+      emit('change', value);
+    };
+
+    return {
+      update
+    };
   }
 });
 </script>

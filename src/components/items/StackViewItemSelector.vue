@@ -9,14 +9,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { StackViewItem } from '@/types';
 
-export default Vue.extend({
-  name: 'StackViewItemSelector',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<StackViewItem>,
+      type: Object as () => StackViewItem,
       required: true
     },
     height: {

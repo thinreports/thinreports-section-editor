@@ -27,19 +27,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { report } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
 
-export default Vue.extend({
-  name: 'SectionTools',
+export default defineComponent({
   components: {
     MenuDropdownSubTree,
     MenuDropdownButton
   },
-  computed: {
-    activeSectionExists () {
+  setup () {
+    const activeSectionExists = computed(() => {
       if (!report.state.activeEntity || report.state.activeEntity.type !== 'section') return false;
 
       const uid = report.state.activeEntity.uid;
@@ -47,14 +46,22 @@ export default Vue.extend({
       return report.state.sections.headers.includes(uid) ||
         report.state.sections.details.includes(uid) ||
         report.state.sections.footers.includes(uid);
-    }
-  },
-  methods: {
-    addNewHeader: () => report.actions.addNewHeader(),
-    addNewDetail: () => report.actions.addNewDetail(),
-    addNewFooter: () => report.actions.addNewFooter(),
-    moveUp: () => report.actions.moveUpActiveSection(),
-    moveDown: () => report.actions.moveDownActiveSection()
+    });
+
+    const addNewHeader = () => report.actions.addNewHeader();
+    const addNewDetail = () => report.actions.addNewDetail();
+    const addNewFooter = () => report.actions.addNewFooter();
+    const moveUp = () => report.actions.moveUpActiveSection();
+    const moveDown = () => report.actions.moveDownActiveSection();
+
+    return {
+      activeSectionExists,
+      addNewHeader,
+      addNewDetail,
+      addNewFooter,
+      moveUp,
+      moveDown
+    };
   }
 });
 </script>

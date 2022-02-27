@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
 import DescriptionProperty from './properties/DescriptionProperty.vue';
@@ -51,8 +51,7 @@ import WidthProperty from './properties/WidthProperty.vue';
 import { report } from '@/store';
 import { StackViewItem, Item } from '@/types';
 
-export default Vue.extend({
-  name: 'StackViewItemProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -66,35 +65,48 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<StackViewItem>,
+      type: Object as () => StackViewItem,
       required: true
     }
   },
-  methods: {
-    updateWidth (value: boolean) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'width', value: Number(value) });
-    },
-    updateX (value: boolean) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'x', value: Number(value) });
-    },
-    updateY (value: boolean) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'y', value: Number(value) });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'display', value });
-    },
-    updateFollowStretch (value: Item['followStretch']) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'followStretch', value });
-    },
-    updateAffectBottomMargin (value: boolean) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'affectBottomMargin', value });
-    },
-    updateId (value: string) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'id', value });
-    },
-    updateDescription (value: string) {
-      report.actions.updateStackViewItem({ uid: this.item.uid, key: 'description', value });
-    }
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const updateWidth = (value: boolean) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'width', value: Number(value) });
+    };
+    const updateX = (value: boolean) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'x', value: Number(value) });
+    };
+    const updateY = (value: boolean) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'y', value: Number(value) });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateFollowStretch = (value: Item['followStretch']) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'followStretch', value });
+    };
+    const updateAffectBottomMargin = (value: boolean) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'affectBottomMargin', value });
+    };
+    const updateId = (value: string) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'id', value });
+    };
+    const updateDescription = (value: string) => {
+      report.actions.updateStackViewItem({ uid: item.value.uid, key: 'description', value });
+    };
+
+    return {
+      updateWidth,
+      updateX,
+      updateY,
+      updateDisplay,
+      updateFollowStretch,
+      updateAffectBottomMargin,
+      updateId,
+      updateDescription
+    };
   }
 });
 </script>

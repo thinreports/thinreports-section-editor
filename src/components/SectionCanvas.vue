@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
 import { report, operator, editor } from '../store';
 import SectionCanvasHighlighter from './SectionCanvasHighlighter.vue';
 import CanvasDrawer from './base/CanvasDrawer.vue';
@@ -45,8 +45,7 @@ import TextBlockItem from './items/TextBlockItem.vue';
 import TextItem from './items/TextItem.vue';
 import { AnySection, AnyItem, ItemType, Coords } from '@/types';
 
-export default Vue.extend({
-  name: 'SectionCanvas',
+export default defineComponent({
   components: {
     RectItem,
     EllipseItem,
@@ -61,7 +60,7 @@ export default Vue.extend({
   },
   props: {
     section: {
-      type: Object as PropType<AnySection>,
+      type: Object as () => AnySection,
       required: true
     },
     top: {
@@ -69,48 +68,57 @@ export default Vue.extend({
       required: true
     }
   },
-  data () {
-    return {
-      pointerDown: false
-    };
-  },
-  computed: {
-    paperSize: () => report.getters.paperSize(),
-    isDrawMode: () => editor.getters.isDrawMode(),
-    width (): number {
-      return this.paperSize.width;
-    },
-    transform (): string {
-      return `translate(${Object.values(this.translation).join(',')})`;
-    },
-    translation (): Coords {
-      return { x: 0, y: this.top };
-    },
-    isActive (): boolean {
-      return report.getters.isActiveSection(this.section.uid);
-    },
-    items (): AnyItem[] {
+  setup (props) {
+    const { section, top } = toRefs(props);
+
+    const pointerDown = ref(false);
+
+    const paperSize = computed(() => report.getters.paperSize());
+    const isDrawMode = computed(() => editor.getters.isDrawMode());
+    const width = computed((): number => {
+      return paperSize.value.width;
+    });
+    const transform = computed((): string => {
+      return `translate(${Object.values(translation.value).join(',')})`;
+    });
+    const translation = computed((): Coords => {
+      return { x: 0, y: top.value };
+    });
+    const isActive = computed((): boolean => {
+      return report.getters.isActiveSection(section.value.uid);
+    });
+    const items = computed((): AnyItem[] => {
       const getters = report.getters;
-      return this.section.items.map(uid => getters.findItem(uid));
-    }
-  },
-  methods: {
-    startDragItem (item: AnyItem) {
+      return section.value.items.map(uid => getters.findItem(uid));
+    });
+
+    const startDragItem = (item: AnyItem) => {
       operator.actions.startItemDrag({
         itemUid: item.uid,
-        translation: this.translation
+        translation: translation.value
       });
-    },
-    startDrawItem () {
+    };
+    const startDrawItem = () => {
       const itemType = editor.state.activeTool as ItemType;
 
       operator.actions.startItemDraw({
         itemType,
         targetType: 'section',
-        targetUid: this.section.uid,
-        translation: this.translation
+        targetUid: section.value.uid,
+        translation: translation.value
       });
-    }
+    };
+
+    return {
+      isDrawMode,
+      width,
+      transform,
+      translation,
+      isActive,
+      items,
+      startDragItem,
+      startDrawItem
+    };
   }
 });
 </script>

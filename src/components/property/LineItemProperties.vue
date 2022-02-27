@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { round } from '../../lib/round-float-values';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
@@ -71,8 +71,7 @@ import WidthProperty from './properties/WidthProperty.vue';
 import { report } from '@/store';
 import { LineItem, Bounds } from '@/types';
 
-export default Vue.extend({
-  name: 'LineItemProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -90,74 +89,91 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<LineItem>,
+      type: Object as () => LineItem,
       required: true
     }
   },
-  computed: {
-    bounds (): Bounds {
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const bounds = computed((): Bounds => {
       return {
-        x: this.isXDirectionPositive ? this.item.x1 : this.item.x2,
-        y: this.isYDirectionPositive ? this.item.y1 : this.item.y2,
-        width: round(Math.abs(this.item.x1 - this.item.x2)),
-        height: round(Math.abs(this.item.y1 - this.item.y2))
+        x: isXDirectionPositive.value ? item.value.x1 : item.value.x2,
+        y: isYDirectionPositive.value ? item.value.y1 : item.value.y2,
+        width: round(Math.abs(item.value.x1 - item.value.x2)),
+        height: round(Math.abs(item.value.y1 - item.value.y2))
       };
-    },
-    isXDirectionPositive (): boolean {
-      return this.item.x1 < this.item.x2;
-    },
-    isYDirectionPositive (): boolean {
-      return this.item.y1 < this.item.y2;
-    }
-  },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'id', value });
-    },
-    updateDescription (value: string) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'description', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'display', value });
-    },
-    updateX (value: string) {
-      this.updateBounds({ ...this.bounds, x: Number(value) });
-    },
-    updateY (value: string) {
-      this.updateBounds({ ...this.bounds, y: Number(value) });
-    },
-    updateWidth (value: string) {
-      this.updateBounds({ ...this.bounds, width: Number(value) });
-    },
-    updateHeight (value: string) {
-      this.updateBounds({ ...this.bounds, height: Number(value) });
-    },
-    updateBounds (bounds: Bounds) {
+    });
+    const isXDirectionPositive = computed((): boolean => {
+      return item.value.x1 < item.value.x2;
+    });
+    const isYDirectionPositive = computed((): boolean => {
+      return item.value.y1 < item.value.y2;
+    });
+
+    const updateId = (value: string) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'id', value });
+    };
+    const updateDescription = (value: string) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'description', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateX = (value: string) => {
+      updateBounds({ ...bounds.value, x: Number(value) });
+    };
+    const updateY = (value: string) => {
+      updateBounds({ ...bounds.value, y: Number(value) });
+    };
+    const updateWidth = (value: string) => {
+      updateBounds({ ...bounds.value, width: Number(value) });
+    };
+    const updateHeight = (value: string) => {
+      updateBounds({ ...bounds.value, height: Number(value) });
+    };
+    const updateBounds = (bounds: Bounds) => {
       report.actions.updateLineItemValues({
-        uid: this.item.uid,
+        uid: item.value.uid,
         values: [
-          { key: 'x1', value: this.isXDirectionPositive ? bounds.x : bounds.x + bounds.width },
-          { key: 'x2', value: this.isXDirectionPositive ? bounds.x + bounds.width : bounds.x },
-          { key: 'y1', value: this.isYDirectionPositive ? bounds.y : bounds.y + bounds.height },
-          { key: 'y2', value: this.isYDirectionPositive ? bounds.y + bounds.height : bounds.y }
+          { key: 'x1', value: isXDirectionPositive.value ? bounds.x : bounds.x + bounds.width },
+          { key: 'x2', value: isXDirectionPositive.value ? bounds.x + bounds.width : bounds.x },
+          { key: 'y1', value: isYDirectionPositive.value ? bounds.y : bounds.y + bounds.height },
+          { key: 'y2', value: isYDirectionPositive.value ? bounds.y + bounds.height : bounds.y }
         ]
       });
-    },
-    updateFollowStretch (value: LineItem['followStretch']) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'followStretch', value });
-    },
-    updateAffectBottomMargin (value: boolean) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'affectBottomMargin', value });
-    },
-    updateBorderColor (value: string) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderColor: value } });
-    },
-    updateBorderWidth (value: string) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderWidth: Number(value) } });
-    },
-    updateBorderStyle (value: LineItem['style']['borderStyle']) {
-      report.actions.updateLineItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderStyle: value } });
-    }
+    };
+    const updateFollowStretch = (value: LineItem['followStretch']) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'followStretch', value });
+    };
+    const updateAffectBottomMargin = (value: boolean) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'affectBottomMargin', value });
+    };
+    const updateBorderColor = (value: string) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderColor: value } });
+    };
+    const updateBorderWidth = (value: string) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderWidth: Number(value) } });
+    };
+    const updateBorderStyle = (value: LineItem['style']['borderStyle']) => {
+      report.actions.updateLineItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderStyle: value } });
+    };
+
+    return {
+      bounds,
+      updateId,
+      updateDescription,
+      updateDisplay,
+      updateX,
+      updateY,
+      updateWidth,
+      updateHeight,
+      updateFollowStretch,
+      updateAffectBottomMargin,
+      updateBorderColor,
+      updateBorderWidth,
+      updateBorderStyle
+    };
   }
 });
 </script>

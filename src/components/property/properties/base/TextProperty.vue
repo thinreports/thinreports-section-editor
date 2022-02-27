@@ -16,10 +16,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, nextTick } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'TextProperty',
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -34,15 +33,19 @@ export default Vue.extend({
       default: ''
     }
   },
-  methods: {
-    async change (value: string) {
-      this.$emit('change', value);
+  setup (_, { emit }) {
+    const change = async (value: string) => {
+      emit('change', value);
 
       // When the value becomes the same as the current value due to rounding processing, etc.,
       // the change cannot be detected, so the update is forcibly executed.
-      await this.$nextTick();
+      await nextTick();
       this.$forceUpdate();
-    }
+    };
+
+    return {
+      change
+    };
   }
 });
 </script>

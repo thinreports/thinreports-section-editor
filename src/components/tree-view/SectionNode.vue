@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { report } from '../../store';
 import { AnyItem, Section, ItemUid } from '../../types';
 import SectionIcon from '../icons/SectionIcon.vue';
@@ -43,8 +43,7 @@ import GraphicItemNode from './GraphicItemNode.vue';
 import NodeButton from './NodeButton.vue';
 import StackViewItemNode from './StackViewItemNode.vue';
 
-export default Vue.extend({
-  name: 'SectionNode',
+export default defineComponent({
   components: {
     GraphicItemNode,
     StackViewItemNode,
@@ -53,15 +52,15 @@ export default Vue.extend({
   },
   props: {
     itemUids: {
-      type: Array as PropType<ItemUid[]>,
+      type: Array as () => ItemUid[],
       required: true
     },
     sectionId: {
-      type: String as PropType<Section['id']>,
+      type: String as () => Section['id'],
       required: true
     },
     sectionType: {
-      type: String as PropType<Section['type']>,
+      type: String as () => Section['type'],
       required: true
     },
     active: {
@@ -69,19 +68,27 @@ export default Vue.extend({
       default: false
     }
   },
-  computed: {
-    items (): AnyItem[] {
-      return this.itemUids.map(uid => report.getters.findItem(uid));
-    },
-    activeItemUid: () => report.getters.activeItem()?.uid
-  },
-  methods: {
-    emitActivate () {
-      this.$emit('activate');
-    },
-    activateItem (uid: ItemUid) {
+  setup (props, { emit }) {
+    const { itemUids } = toRefs(props);
+
+    const items = computed((): AnyItem[] => {
+      return itemUids.value.map(uid => report.getters.findItem(uid));
+    });
+    const activeItemUid = computed(() => report.getters.activeItem()?.uid);
+
+    const emitActivate = () => {
+      emit('activate');
+    };
+    const activateItem = (uid: ItemUid) => {
       report.actions.activateEntity({ type: 'item', uid });
-    }
+    };
+
+    return {
+      items,
+      activeItemUid,
+      emitActivate,
+      activateItem
+    };
   }
 });
 </script>

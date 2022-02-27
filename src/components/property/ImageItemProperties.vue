@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
 import DescriptionProperty from './properties/DescriptionProperty.vue';
@@ -55,8 +55,7 @@ import WidthProperty from './properties/WidthProperty.vue';
 import { report } from '@/store';
 import { ImageItem } from '@/types';
 
-export default Vue.extend({
-  name: 'ImageItemProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -71,38 +70,52 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<ImageItem>,
+      type: Object as () => ImageItem,
       required: true
     }
   },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'id', value });
-    },
-    updateDescription (value: string) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'description', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'display', value });
-    },
-    updateHeight (value: string) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'height', value: Number(value) });
-    },
-    updateWidth (value: string) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'width', value: Number(value) });
-    },
-    updateX (value: string) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'x', value: Number(value) });
-    },
-    updateY (value: string) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'y', value: Number(value) });
-    },
-    updateFollowStretch (value: ImageItem['followStretch']) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'followStretch', value });
-    },
-    updateAffectBottomMargin (value: boolean) {
-      report.actions.updateImageItem({ uid: this.item.uid, key: 'affectBottomMargin', value });
-    }
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const updateId = (value: string) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'id', value });
+    };
+    const updateDescription = (value: string) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'description', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateHeight = (value: string) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'height', value: Number(value) });
+    };
+    const updateWidth = (value: string) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'width', value: Number(value) });
+    };
+    const updateX = (value: string) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'x', value: Number(value) });
+    };
+    const updateY = (value: string) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'y', value: Number(value) });
+    };
+    const updateFollowStretch = (value: ImageItem['followStretch']) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'followStretch', value });
+    };
+    const updateAffectBottomMargin = (value: boolean) => {
+      report.actions.updateImageItem({ uid: item.value.uid, key: 'affectBottomMargin', value });
+    };
+
+    return {
+      updateId,
+      updateDescription,
+      updateDisplay,
+      updateHeight,
+      updateWidth,
+      updateX,
+      updateY,
+      updateFollowStretch,
+      updateAffectBottomMargin
+    };
   }
 });
 </script>

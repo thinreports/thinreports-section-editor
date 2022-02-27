@@ -18,13 +18,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { report } from '../store';
 import { SectionUid } from '../types';
 import SectionNode from './tree-view/SectionNode.vue';
 
-export default Vue.extend({
-  name: 'TreeViewPane',
+export default defineComponent({
   components: {
     SectionNode
   },
@@ -34,14 +33,19 @@ export default Vue.extend({
       required: true
     }
   },
-  computed: {
-    sections: () => report.getters.sections(),
-    activeSectionUid: () => report.getters.activeSection()?.uid
-  },
-  methods: {
-    activateSection (uid: SectionUid) {
+  setup () {
+    const sections = computed(() => report.getters.sections());
+    const activeSectionUid = computed(() => report.getters.activeSection()?.uid);
+
+    const activateSection = (uid: SectionUid) => {
       report.actions.activateEntity({ type: 'section', uid });
-    }
+    };
+
+    return {
+      sections,
+      activeSectionUid,
+      activateSection
+    };
   }
 });
 </script>

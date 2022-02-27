@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, nextTick, toRefs } from '@vue/composition-api';
 import { calcDiv, calcPlus, calcMul, calcMinus } from '../../lib/strict-calculator';
 import { report } from '../../store';
 import { TextItem } from '@/types';
@@ -40,43 +40,54 @@ type TextStyle = {
   textAnchor: 'start' | 'middle' | 'end';
 };
 
-export default Vue.extend({
-  name: 'TextItemBody',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<TextItem>,
+      type: Object as () => TextItem,
       required: true
     }
   },
-  computed: {
-    textStyle (): TextStyle {
+  watch: {
+    item: {
+      handler (newItem: TextItem, oldItem: TextItem) {
+        if (isAdjustingBoxWidthRequired(newItem, oldItem)) {
+          nextTick(() => adjustBoxWidth());
+        }
+      },
+      deep: true
+    }
+  },
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const textStyle = computed((): TextStyle => {
       return {
-        fontSize: `${this.item.style.fontSize}px`,
-        fontFamily: this.item.style.fontFamily.join(','),
-        fill: this.item.style.color,
-        fontWeight: this.fontWeight,
-        fontStyle: this.fontStyle,
-        textDecoration: this.textDecoration,
-        textAnchor: this.textAnchor,
-        letterSpacing: this.letterSpacing
+        fontSize: `${item.value.style.fontSize}px`,
+        fontFamily: item.value.style.fontFamily.join(','),
+        fill: item.value.style.color,
+        fontWeight: fontWeight.value,
+        fontStyle: fontStyle.value,
+        textDecoration: textDecoration.value,
+        textAnchor: textAnchor.value,
+        letterSpacing: letterSpacing.value
       };
-    },
-    fontWeight (): TextStyle['fontWeight'] {
-      return this.item.style.fontStyle.includes('bold') ? 'bold' : 'normal';
-    },
-    fontStyle (): TextStyle['fontStyle'] {
-      return this.item.style.fontStyle.includes('italic') ? 'italic' : 'normal';
-    },
-    textAnchor (): TextStyle['textAnchor'] {
-      switch (this.item.style.textAlign) {
+    });
+    const fontWeight = computed((): TextStyle['fontWeight'] => {
+      return item.value.style.fontStyle.includes('bold') ? 'bold' : 'normal';
+    });
+    const fontStyle = computed((): TextStyle['fontStyle'] => {
+      return item.value.style.fontStyle.includes('italic') ? 'italic' : 'normal';
+    });
+    const textAnchor = computed((): TextStyle['textAnchor'] => {
+      switch (item.value.style.textAlign) {
         case 'left': return 'start';
         case 'center': return 'middle';
         case 'right': return 'end';
         default: throw new Error('Invalid text align value');
       }
-    },
-    textDecoration (): TextStyle['textDecoration'] {
-      const fontStyles = this.item.style.fontStyle;
+    });
+    const textDecoration = computed((): TextStyle['textDecoration'] => {
+      const fontStyles = item.value.style.fontStyle;
 
       if (fontStyles.includes('underline') && fontStyles.includes('linethrough')) {
         return 'underline line-through';
@@ -87,46 +98,35 @@ export default Vue.extend({
       } else {
         return 'none';
       }
-    },
-    letterSpacing (): TextStyle['letterSpacing'] {
-      return this.item.style.letterSpacing !== '' ? `${this.item.style.letterSpacing}px` : 'normal';
-    },
-    calculatedX (): number {
-      switch (this.textAnchor) {
-        case 'start': return this.item.x;
-        case 'middle': return calcPlus(this.item.x, calcDiv(this.item.width, 2));
-        case 'end': return calcPlus(this.item.x, this.item.width);
+    });
+    const letterSpacing = computed((): TextStyle['letterSpacing'] => {
+      return item.value.style.letterSpacing !== '' ? `${item.value.style.letterSpacing}px` : 'normal';
+    });
+    const calculatedX = computed((): number => {
+      switch (textAnchor.value) {
+        case 'start': return item.value.x;
+        case 'middle': return calcPlus(item.value.x, calcDiv(item.value.width, 2));
+        case 'end': return calcPlus(item.value.x, item.value.width);
         default: throw new Error('Invalid text align value');
       }
-    },
-    calculatedY (): number {
-      switch (this.item.style.verticalAlign) {
-        case 'top': return this.item.y;
-        case 'middle': return calcPlus(this.item.y, calcDiv(calcMinus(this.item.height, this.item.contentHeight), 2));
-        case 'bottom': return calcMinus(calcPlus(this.item.y, this.item.height), this.item.contentHeight);
+    });
+    const calculatedY = computed((): number => {
+      switch (item.value.style.verticalAlign) {
+        case 'top': return item.value.y;
+        case 'middle': return calcPlus(item.value.y, calcDiv(calcMinus(item.value.height, item.value.contentHeight), 2));
+        case 'bottom': return calcMinus(calcPlus(item.value.y, item.value.height), item.value.contentHeight);
         default: throw new Error('Invalid vertical align value');
       }
-    }
-  },
-  watch: {
-    item: {
-      handler (newItem: TextItem, oldItem: TextItem) {
-        if (this.isAdjustingBoxWidthRequired(newItem, oldItem)) {
-          this.$nextTick(() => this.adjustBoxWidth());
-        }
-      },
-      deep: true
-    }
-  },
-  methods: {
-    calculateTextLineY (index: number) {
-      return calcPlus(this.calculatedY, calcMul(this.item.style.lineHeight, index));
-    },
-    adjustBoxWidth () {
+    });
+
+    const calculateTextLineY = (index: number) => {
+      return calcPlus(calculatedY.value, calcMul(item.value.style.lineHeight, index));
+    };
+    const adjustBoxWidth = () => {
       const bbox = (this.$refs.box as SVGGElement).getBBox();
-      report.actions.adjustTextItemWidth({ uid: this.item.uid, minWidth: bbox.width });
-    },
-    isAdjustingBoxWidthRequired (item: TextItem, prevItem: TextItem): boolean {
+      report.actions.adjustTextItemWidth({ uid: item.value.uid, minWidth: bbox.width });
+    };
+    const isAdjustingBoxWidthRequired = (item: TextItem, prevItem: TextItem): boolean => {
       const itemStyle = item.style;
       const prevItemStyle = prevItem.style;
 
@@ -138,7 +138,13 @@ export default Vue.extend({
         item.texts.join() !== prevItem.texts.join() ||
         itemStyle.letterSpacing !== prevItemStyle.letterSpacing
       );
-    }
+    };
+
+    return {
+      textStyle,
+      calculatedX,
+      calculateTextLineY
+    };
   }
 });
 </script>

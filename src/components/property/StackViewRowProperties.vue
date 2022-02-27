@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AutoStretchProperty from './properties//AutoStretchProperty.vue';
 import HeightProperty from './properties//HeightProperty.vue';
@@ -30,8 +30,7 @@ import IdProperty from './properties/IdProperty.vue';
 import { report } from '@/store';
 import { StackViewRow } from '@/types';
 
-export default Vue.extend({
-  name: 'StackViewRowProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -41,23 +40,32 @@ export default Vue.extend({
   },
   props: {
     row: {
-      type: Object as PropType<StackViewRow>,
+      type: Object as () => StackViewRow,
       required: true
     }
   },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateStackViewRow({ uid: this.row.uid, key: 'id', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateStackViewRow({ uid: this.row.uid, key: 'display', value });
-    },
-    updateHeight (value: string) {
-      report.actions.updateStackViewRow({ uid: this.row.uid, key: 'height', value: Number(value) });
-    },
-    updateAutoStretch (value: boolean) {
-      report.actions.updateStackViewRow({ uid: this.row.uid, key: 'autoStretch', value });
-    }
+  setup (props) {
+    const { row } = toRefs(props);
+
+    const updateId = (value: string) => {
+      report.actions.updateStackViewRow({ uid: row.value.uid, key: 'id', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateStackViewRow({ uid: row.value.uid, key: 'display', value });
+    };
+    const updateHeight = (value: string) => {
+      report.actions.updateStackViewRow({ uid: row.value.uid, key: 'height', value: Number(value) });
+    };
+    const updateAutoStretch = (value: boolean) => {
+      report.actions.updateStackViewRow({ uid: row.value.uid, key: 'autoStretch', value });
+    };
+
+    return {
+      updateId,
+      updateDisplay,
+      updateHeight,
+      updateAutoStretch
+    };
   }
 });
 </script>

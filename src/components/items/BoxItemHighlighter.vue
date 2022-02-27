@@ -12,17 +12,16 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { calcMinus, calcPlus, calcMul, calcDiv } from '../../lib/strict-calculator';
 import { editor } from '../../store';
 import { BoundingBox } from '@/types';
 
-export default Vue.extend({
-  name: 'BoxItemHighlighter',
+export default defineComponent({
   props: {
     itemBounds: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     },
     itemStrokeWidth: {
@@ -34,28 +33,39 @@ export default Vue.extend({
       default: 0
     }
   },
-  computed: {
-    x (): number {
-      return calcMinus(this.itemBounds.x, this.extraSize);
-    },
-    y (): number {
-      return calcMinus(this.itemBounds.y, this.extraSize);
-    },
-    width (): number {
-      return calcPlus(this.itemBounds.width, calcMul(this.extraSize, 2));
-    },
-    height (): number {
-      return calcPlus(this.itemBounds.height, calcMul(this.extraSize, 2));
-    },
-    strokeWidth (): number {
+  setup (props) {
+    const { itemBounds, itemStrokeWidth, itemBorderRadius } = toRefs(props);
+
+    const x = computed((): number => {
+      return calcMinus(itemBounds.value.x, extraSize.value);
+    });
+    const y = computed((): number => {
+      return calcMinus(itemBounds.value.y, extraSize.value);
+    });
+    const width = computed((): number => {
+      return calcPlus(itemBounds.value.width, calcMul(extraSize.value, 2));
+    });
+    const height = computed((): number => {
+      return calcPlus(itemBounds.value.height, calcMul(extraSize.value, 2));
+    });
+    const strokeWidth = computed((): number => {
       return inverseScale(3, editor.getters.zoomRate());
-    },
-    extraSize (): number {
-      return calcPlus(calcDiv(this.itemStrokeWidth, 2), calcDiv(this.strokeWidth, 2));
-    },
-    radius (): number {
-      return this.itemBorderRadius !== 0 ? this.itemBorderRadius + 1 : 0;
-    }
+    });
+    const extraSize = computed((): number => {
+      return calcPlus(calcDiv(itemStrokeWidth.value, 2), calcDiv(strokeWidth.value, 2));
+    });
+    const radius = computed((): number => {
+      return itemBorderRadius.value !== 0 ? itemBorderRadius.value + 1 : 0;
+    });
+
+    return {
+      x,
+      y,
+      width,
+      height,
+      strokeWidth,
+      radius
+    };
   }
 });
 </script>

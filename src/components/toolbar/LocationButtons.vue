@@ -28,27 +28,33 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { report } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
 
-export default Vue.extend({
-  name: 'LocationButtons',
+export default defineComponent({
   components: {
     MenuDropdownSubTree,
     MenuDropdownButton
   },
-  computed: {
-    isEditable (): boolean {
+  setup () {
+    const isEditable = computed((): boolean => {
       return !!report.getters.activeItem();
-    }
-  },
-  methods: {
-    bringToFront: () => report.actions.bringActiveItemToFront(),
-    bringForward: () => report.actions.bringActiveItemForward(),
-    sendToBack: () => report.actions.sendActiveItemToBack(),
-    sendBackward: () => report.actions.sendActiveItemBackward()
+    });
+
+    const bringToFront = () => report.actions.bringActiveItemToFront();
+    const bringForward = () => report.actions.bringActiveItemForward();
+    const sendToBack = () => report.actions.sendActiveItemToBack();
+    const sendBackward = () => report.actions.sendActiveItemBackward();
+
+    return {
+      isEditable,
+      bringToFront,
+      bringForward,
+      sendToBack,
+      sendBackward
+    };
   }
 });
 </script>

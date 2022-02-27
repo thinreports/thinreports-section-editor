@@ -31,32 +31,38 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import ItemIdLabel from './ItemIdLabel.vue';
 import { ImageBlockItem } from '@/types';
 
-export default Vue.extend({
-  name: 'ImageBlockItemBody',
+export default defineComponent({
   components: {
     ItemIdLabel
   },
   props: {
     item: {
-      type: Object as PropType<ImageBlockItem>,
+      type: Object as () => ImageBlockItem,
       required: true
     }
   },
-  computed: {
-    id (): string {
-      return this.item.id === '' ? 'no id' : this.item.id;
-    },
-    iconStyle () {
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const id = computed((): string => {
+      return item.value.id === '' ? 'no id' : item.value.id;
+    });
+    const iconStyle = computed(() => {
       return {
         fontSize: `${inverseScale(1.7, editor.getters.zoomRate())}rem`
       };
-    }
+    });
+
+    return {
+      id,
+      iconStyle
+    };
   }
 });
 </script>

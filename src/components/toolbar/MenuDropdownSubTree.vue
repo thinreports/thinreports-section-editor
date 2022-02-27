@@ -11,10 +11,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'MenuDropdownSubTree',
+export default defineComponent({
   props: {
     title: {
       type: String,

@@ -10,13 +10,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { calcPlus } from '../../lib/strict-calculator';
 import { inverseScale } from '@/lib/inverse-scale';
 import { editor } from '@/store';
 
-export default Vue.extend({
-  name: 'StackViewItemRoweDivider',
+export default defineComponent({
   props: {
     top: {
       type: Number,
@@ -31,22 +30,32 @@ export default Vue.extend({
       required: true
     }
   },
-  computed: {
-    x1 (): number {
-      return this.left;
-    },
-    y1 (): number {
-      return this.top;
-    },
-    x2 (): number {
-      return calcPlus(this.left, this.width);
-    },
-    y2 (): number {
-      return this.top;
-    },
-    strokeWidth (): number {
+  setup (props) {
+    const { top, left, width } = toRefs(props);
+
+    const x1 = computed((): number => {
+      return left.value;
+    });
+    const y1 = computed((): number => {
+      return top.value;
+    });
+    const x2 = computed((): number => {
+      return calcPlus(left.value, width.value);
+    });
+    const y2 = computed((): number => {
+      return top.value;
+    });
+    const strokeWidth = computed((): number => {
       return inverseScale(1, editor.getters.zoomRate());
-    }
+    });
+
+    return {
+      x1,
+      y1,
+      x2,
+      y2,
+      strokeWidth
+    };
   }
 });
 </script>

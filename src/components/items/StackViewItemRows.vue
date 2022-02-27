@@ -26,8 +26,8 @@
 </template>
 
 <script lang="ts">
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { DeepReadonly } from 'utility-types';
-import Vue, { PropType } from 'vue';
 import { report } from '../../store';
 import CanvasSelector from '../base/CanvasSelector.vue';
 import StackViewItemRow from './StackViewItemRow.vue';
@@ -39,8 +39,7 @@ type RowWithBounds = {
   bounds: BoundingBox;
 };
 
-export default Vue.extend({
-  name: 'StackViewItemRows',
+export default defineComponent({
   components: {
     StackViewItemRow,
     CanvasSelector,
@@ -48,15 +47,15 @@ export default Vue.extend({
   },
   props: {
     rows: {
-      type: Array as PropType<StackViewItem['rows']>,
+      type: Array as () => StackViewItem['rows'],
       required: true
     },
     itemBounds: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     },
     sectionTranslation: {
-      type: Object as PropType<Translation>,
+      type: Object as () => Translation,
       required: true
     },
     stackViewActive: {
@@ -64,17 +63,19 @@ export default Vue.extend({
       required: true
     }
   },
-  computed: {
-    rowWithBounds (): RowWithBounds[] {
-      const rowsWithBounds: RowWithBounds[] = [];
-      let top: number = this.itemBounds.y;
+  setup (props) {
+    const { rows, itemBounds } = toRefs(props);
 
-      this.rows.forEach(rowUid => {
+    const rowWithBounds = computed((): RowWithBounds[] => {
+      const rowsWithBounds: RowWithBounds[] = [];
+      let top: number = itemBounds.value.y;
+
+      rows.value.forEach(rowUid => {
         const row = report.getters.findStackViewRow(rowUid);
         const bounds = {
-          x: this.itemBounds.x,
+          x: itemBounds.value.x,
           y: top,
-          width: this.itemBounds.width,
+          width: itemBounds.value.width,
           height: row.height
         };
         rowsWithBounds.push({ row, bounds });
@@ -82,15 +83,20 @@ export default Vue.extend({
       });
 
       return rowsWithBounds;
-    }
-  },
-  methods: {
-    activateRow (uid: StackViewRowUid) {
+    });
+
+    const activateRow = (uid: StackViewRowUid) => {
       report.actions.activateEntity({ uid, type: 'stack-view-row' });
-    },
-    isLastRow (index: number): boolean {
-      return this.rows.length === index + 1;
-    }
+    };
+    const isLastRow = (index: number): boolean => {
+      return rows.value.length === index + 1;
+    };
+
+    return {
+      rowWithBounds,
+      activateRow,
+      isLastRow
+    };
   }
 });
 </script>

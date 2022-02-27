@@ -16,14 +16,13 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import DetailSectionProperties from './DetailSectionProperties.vue';
 import FooterSectionProperties from './FooterSectionProperties.vue';
 import HeaderSectionProperties from './HeaderSectionProperties.vue';
 import { AnySection } from '@/types';
 
-export default Vue.extend({
-  name: 'SectionProperties',
+export default defineComponent({
   components: {
     HeaderSectionProperties,
     DetailSectionProperties,
@@ -31,22 +30,28 @@ export default Vue.extend({
   },
   props: {
     section: {
-      type: Object as PropType<AnySection>,
+      type: Object as () => AnySection,
       required: true
     }
   },
-  computed: {
-    isHeaderSection (): boolean {
-      return this.section.type === 'header';
-    },
+  setup (props) {
+    const { section } = toRefs(props);
 
-    isDetailSection (): boolean {
-      return this.section.type === 'detail';
-    },
+    const isHeaderSection = computed((): boolean => {
+      return section.value.type === 'header';
+    });
+    const isDetailSection = computed((): boolean => {
+      return section.value.type === 'detail';
+    });
+    const isFooterSection = computed((): boolean => {
+      return section.value.type === 'footer';
+    });
 
-    isFooterSection (): boolean {
-      return this.section.type === 'footer';
-    }
+    return {
+      isHeaderSection,
+      isDetailSection,
+      isFooterSection
+    };
   }
 });
 </script>
