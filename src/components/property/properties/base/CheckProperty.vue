@@ -15,10 +15,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'CheckProperty',
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -29,10 +28,16 @@ export default Vue.extend({
       required: true
     }
   },
-  methods: {
-    change () {
-      this.$emit('change', !this.value);
-    }
+  setup (props, { emit }) {
+    const { value } = toRefs(props);
+
+    const change = () => {
+      emit('change', !value.value);
+    };
+
+    return {
+      change
+    };
   }
 });
 </script>

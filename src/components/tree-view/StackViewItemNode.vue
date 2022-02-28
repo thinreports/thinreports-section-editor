@@ -20,15 +20,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { report } from '../../store';
 import { StackViewItem, StackViewRow, StackViewRowUid } from '../../types';
 import ItemIcon from '../icons/ItemIcon.vue';
 import NodeButton from './NodeButton.vue';
 import StackViewItemRowNode from './StackViewItemRowNode.vue';
 
-export default Vue.extend({
-  name: 'StackViewItemNode',
+export default defineComponent({
   components: {
     StackViewItemRowNode,
     NodeButton,
@@ -36,11 +35,11 @@ export default Vue.extend({
   },
   props: {
     itemId: {
-      type: String as PropType<StackViewItem['id']>,
+      type: String as () => StackViewItem['id'],
       required: true
     },
     rowUids: {
-      type: Array as PropType<StackViewRowUid[]>,
+      type: Array as () => StackViewRowUid[],
       required: true
     },
     active: {
@@ -48,19 +47,27 @@ export default Vue.extend({
       default: false
     }
   },
-  computed: {
-    rows (): StackViewRow[] {
-      return this.rowUids.map(uid => report.getters.findStackViewRow(uid));
-    },
-    activeRowUid: () => report.getters.activeStackViewRow()?.uid
-  },
-  methods: {
-    emitActivate () {
-      this.$emit('activate');
-    },
-    activateRow (uid: StackViewRowUid) {
+  setup (props, { emit }) {
+    const { rowUids } = toRefs(props);
+
+    const rows = computed((): StackViewRow[] => {
+      return rowUids.value.map(uid => report.getters.findStackViewRow(uid));
+    });
+    const activeRowUid = computed(() => report.getters.activeStackViewRow()?.uid);
+
+    const emitActivate = () => {
+      emit('activate');
+    };
+    const activateRow = (uid: StackViewRowUid) => {
       report.actions.activateEntity({ type: 'stack-view-row', uid });
-    }
+    };
+
+    return {
+      rows,
+      activeRowUid,
+      emitActivate,
+      activateRow
+    };
   }
 });
 </script>

@@ -18,19 +18,22 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'FontPreloader',
-  computed: {
-    fontFamilies () {
+export default defineComponent({
+  setup () {
+    const fontFamilies = computed(() => {
       return [
         'IPAGothic',
         'IPAPGothic',
         'IPAMincho',
         'IPAPMincho'
       ];
-    }
+    });
+
+    return {
+      fontFamilies
+    };
   }
 });
 </script>

@@ -10,23 +10,26 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import { Bounds } from '@/types';
 
-export default Vue.extend({
-  name: 'ItemBoundingBoxOutline',
+export default defineComponent({
   props: {
     bounds: {
-      type: Object as PropType<Bounds>,
+      type: Object as () => Bounds,
       required: true
     }
   },
-  computed: {
-    strokeWidth (): number {
+  setup () {
+    const strokeWidth = computed((): number => {
       return inverseScale(1, editor.getters.zoomRate());
-    }
+    });
+
+    return {
+      strokeWidth
+    };
   }
 });
 </script>

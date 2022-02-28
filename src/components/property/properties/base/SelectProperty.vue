@@ -22,15 +22,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
 export type Option<T> = {
   label: string;
   value: T;
 };
 
-export default Vue.extend({
-  name: 'SelectProperty',
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -41,14 +40,18 @@ export default Vue.extend({
       required: true
     },
     options: {
-      type: Array as PropType<Option<number | string>[]>,
+      type: Array as () => Option<number | string>[],
       required: true
     }
   },
-  methods: {
-    change (value: string) {
-      this.$emit('change', value);
-    }
+  setup (_, { emit }) {
+    const change = (value: string) => {
+      emit('change', value);
+    };
+
+    return {
+      change
+    };
   }
 });
 </script>

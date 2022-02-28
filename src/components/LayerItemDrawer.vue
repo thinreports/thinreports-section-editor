@@ -20,15 +20,11 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
 import { BoundsTransformer } from '../lib/bounds-transformer';
 import { operator, report, editor } from '../store';
 import ItemOutline from './items/ItemOutline.vue';
 import { BoundingPoints, Coords } from '@/types';
-
-type Data = {
-  outlineBounds: BoundingPoints | null;
-};
 
 class UnexpectedStateError extends Error {
   constructor () {
@@ -37,8 +33,7 @@ class UnexpectedStateError extends Error {
   }
 }
 
-export default Vue.extend({
-  name: 'LayerItemDrawer',
+export default defineComponent({
   components: {
     ItemOutline
   },
@@ -48,67 +43,33 @@ export default Vue.extend({
       required: true
     },
     transformSvgPoint: {
-      type: Function as PropType<(point: Coords) => Coords>,
+      type: (Function as unknown) as () => (point: Coords) => Coords,
       required: true
     }
   },
-  data (): Data {
-    return {
-      outlineBounds: null
+  setup (props) {
+    const { transformSvgPoint } = toRefs(props);
+
+    const outlineBounds = ref<BoundingPoints | null>(null);
+
+    const isStarted = computed((): boolean => {
+      return outlineBounds.value !== null;
+    });
+    const drawerState = computed(() => operator.state.itemDrawer);
+
+    const cancel = () => {
+      operator.actions.finishItemDraw();
     };
-  },
-  computed: {
-    isStarted (): boolean {
-      return this.outlineBounds !== null;
-    },
-    drawerState: () => operator.state.itemDrawer
-  },
-  methods: {
-    start (e: MouseEvent) {
-      const point = this.transformSvgPoint(e);
-
-      this.outlineBounds = {
-        x1: point.x,
-        y1: point.y,
-        x2: point.x,
-        y2: point.y
-      };
-    },
-    draw (e: MouseEvent) {
-      const point = this.transformSvgPoint(e);
-
-      if (!this.isStarted) this.start(e);
-      if (!this.outlineBounds) throw new UnexpectedStateError();
-
-      this.outlineBounds.x2 = point.x;
-      this.outlineBounds.y2 = point.y;
-    },
-    finish () {
-      if (!this.isStarted || this.isOutlineEmpty()) {
-        this.cancel();
-        return;
-      }
-
-      if (!this.outlineBounds) throw new UnexpectedStateError();
-
-      this.drawNewItem(this.convertToLocalCoords(this.outlineBounds));
-
-      operator.actions.finishItemDraw();
-      editor.actions.activateTool({ tool: 'select' });
-    },
-    cancel () {
-      operator.actions.finishItemDraw();
-    },
-    isOutlineEmpty () {
-      if (this.outlineBounds) {
-        const box = new BoundsTransformer(this.outlineBounds).toBBox();
+    const isOutlineEmpty = () => {
+      if (outlineBounds.value) {
+        const box = new BoundsTransformer(outlineBounds.value).toBBox();
         return box.width < 4 && box.height < 4;
       } else {
         return true;
       }
-    },
-    drawNewItem (bounds: BoundingPoints) {
-      const { itemType, targetType, targetUid } = this.drawerState;
+    };
+    const drawNewItem = (bounds: BoundingPoints) => {
+      const { itemType, targetType, targetUid } = drawerState.value;
 
       if (!itemType || !targetType || !targetUid) throw new UnexpectedStateError();
 
@@ -125,13 +86,54 @@ export default Vue.extend({
         default:
           throw new Error(`Invalid itemType: ${itemType}`);
       }
-    },
-    convertToLocalCoords (bPoints: BoundingPoints): BoundingPoints {
-      const localTranslation = this.drawerState.translation;
+    };
+    const convertToLocalCoords = (bPoints: BoundingPoints): BoundingPoints => {
+      const localTranslation = drawerState.value.translation;
       if (!localTranslation) throw new UnexpectedStateError();
 
       return new BoundsTransformer(bPoints).relativeFrom(localTranslation).toBPoints();
-    }
+    };
+
+    const start = (e: MouseEvent) => {
+      const point = transformSvgPoint.value(e);
+
+      outlineBounds.value = {
+        x1: point.x,
+        y1: point.y,
+        x2: point.x,
+        y2: point.y
+      };
+    };
+    const draw = (e: MouseEvent) => {
+      const point = transformSvgPoint.value(e);
+
+      if (!isStarted.value) start(e);
+      if (!outlineBounds.value) throw new UnexpectedStateError();
+
+      outlineBounds.value.x2 = point.x;
+      outlineBounds.value.y2 = point.y;
+    };
+    const finish = () => {
+      if (!isStarted.value || isOutlineEmpty()) {
+        cancel();
+        return;
+      }
+
+      if (!outlineBounds.value) throw new UnexpectedStateError();
+
+      drawNewItem(convertToLocalCoords(outlineBounds.value));
+
+      operator.actions.finishItemDraw();
+      editor.actions.activateTool({ tool: 'select' });
+    };
+
+    return {
+      outlineBounds,
+      isStarted,
+      drawerState,
+      draw,
+      finish
+    };
   }
 });
 </script>

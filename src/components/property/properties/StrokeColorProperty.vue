@@ -7,11 +7,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import TextProperty from '@/components/property/properties/base/TextProperty.vue';
 
-export default Vue.extend({
-  name: 'StrokeColorProperty',
+export default defineComponent({
   components: {
     TextProperty
   },
@@ -21,10 +20,14 @@ export default Vue.extend({
       required: true
     }
   },
-  methods: {
-    update (value: string) {
-      this.$emit('change', value);
-    }
+  setup (_, { emit }) {
+    const update = (value: string) => {
+      emit('change', value);
+    };
+
+    return {
+      update
+    };
   }
 });
 </script>

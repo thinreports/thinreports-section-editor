@@ -10,21 +10,24 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { BoundingBox } from '@/types';
 
-export default Vue.extend({
-  name: 'CanvasSelector',
+export default defineComponent({
   props: {
     bounds: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     }
   },
-  methods: {
-    emitSelect () {
-      this.$emit('select');
-    }
+  setup (_, { emit }) {
+    const emitSelect = () => {
+      emit('select');
+    };
+
+    return {
+      emitSelect
+    };
   }
 });
 </script>

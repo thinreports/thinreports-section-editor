@@ -13,15 +13,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { report } from '../../store';
 import BoxItemHighlighter from './BoxItemHighlighter.vue';
 import ItemEntity from './ItemEntity.vue';
 import TextBlockItemBody from './TextBlockItemBody.vue';
 import { TextBlockItem } from '@/types';
 
-export default Vue.extend({
-  name: 'TextBlockItem',
+export default defineComponent({
   components: {
     ItemEntity,
     TextBlockItemBody,
@@ -29,22 +28,29 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<TextBlockItem>,
+      type: Object as () => TextBlockItem,
       required: true
     }
   },
-  computed: {
-    isActive (): boolean {
-      return report.getters.isActiveItem(this.item.uid);
-    }
-  },
-  methods: {
-    dragStart () {
-      this.$emit('itemDragStart', this.item);
-    },
-    activate () {
-      report.actions.activateEntity({ uid: this.item.uid, type: 'item' });
-    }
+  setup (props, { emit }) {
+    const { item } = toRefs(props);
+
+    const isActive = computed((): boolean => {
+      return report.getters.isActiveItem(item.value.uid);
+    });
+
+    const dragStart = () => {
+      emit('itemDragStart', item.value);
+    };
+    const activate = () => {
+      report.actions.activateEntity({ uid: item.value.uid, type: 'item' });
+    };
+
+    return {
+      isActive,
+      dragStart,
+      activate
+    };
   }
 });
 </script>

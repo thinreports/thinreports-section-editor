@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from '@vue/composition-api';
 import Ajv from 'ajv';
 import UIkit from 'uikit';
-import Vue from 'vue';
 import { report, root, metadata } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
@@ -29,44 +29,17 @@ import layoutJsonSchema from '@/store/lib/layout-schema/schema.json';
 
 const { electronAPI } = window;
 
-export default Vue.extend({
-  name: 'FileButtons',
+export default defineComponent({
   components: {
     MenuDropdownSubTree,
     MenuDropdownButton
   },
-  methods: {
-    newReport () {
+  setup () {
+    const newReport = () => {
       location.reload();
-    },
+    };
 
-    async save () {
-      const schema = report.getters.toSchemaJSON();
-
-      if (!this.validateSchema(schema)) return;
-
-      const currentFilename = metadata.getters.filename();
-
-      if (currentFilename === null) {
-        const filename = await electronAPI.saveSchemaFileAs(schema);
-        if (filename) {
-          root.actions.saveSchema(filename);
-        }
-      } else {
-        await electronAPI.saveSchemaFile(schema, currentFilename);
-        root.actions.saveSchema();
-      }
-    },
-
-    async open () {
-      const file = await electronAPI.openSchemaFile();
-
-      if (file) {
-        root.actions.loadSchema(file.schema, file.filename);
-      }
-    },
-
-    validateSchema (jsonString: string): boolean {
+    const validateSchema = (jsonString: string): boolean => {
       const ajv = new Ajv({
         multipleOfPrecision: 3
       });
@@ -87,7 +60,39 @@ export default Vue.extend({
       }
 
       return true;
-    }
+    };
+
+    const save = async () => {
+      const schema = report.getters.toSchemaJSON();
+
+      if (!validateSchema(schema)) return;
+
+      const currentFilename = metadata.getters.filename();
+
+      if (currentFilename === null) {
+        const filename = await electronAPI.saveSchemaFileAs(schema);
+        if (filename) {
+          root.actions.saveSchema(filename);
+        }
+      } else {
+        await electronAPI.saveSchemaFile(schema, currentFilename);
+        root.actions.saveSchema();
+      }
+    };
+
+    const open = async () => {
+      const file = await electronAPI.openSchemaFile();
+
+      if (file) {
+        root.actions.loadSchema(file.schema, file.filename);
+      }
+    };
+
+    return {
+      newReport,
+      save,
+      open
+    };
   }
 });
 </script>

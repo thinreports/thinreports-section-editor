@@ -3,26 +3,31 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { SectionType } from '../../types';
 
-export default Vue.extend({
-  name: 'SectionIcon',
+export default defineComponent({
   props: {
     type: {
-      type: String as PropType<SectionType>,
+      type: String as () => SectionType,
       required: true
     }
   },
-  computed: {
-    iconClass () {
-      switch (this.type) {
+  setup (props) {
+    const { type } = toRefs(props);
+
+    const iconClass = computed(() => {
+      switch (type.value) {
         case 'header': return 'mdi mdi-page-layout-header';
         case 'detail': return 'mdi mdi-page-layout-body';
         case 'footer': return 'mdi mdi-page-layout-footer';
         default: throw new Error('Invalid section type');
       }
-    }
+    });
+
+    return {
+      iconClass
+    };
   }
 });
 </script>

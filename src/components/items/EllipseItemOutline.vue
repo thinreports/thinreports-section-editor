@@ -10,35 +10,44 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { inverseScale } from '@/lib/inverse-scale';
 import { editor } from '@/store';
 import { BoundingBox, EllipseItem } from '@/types';
 
-export default Vue.extend({
-  name: 'EllipseItemOutline',
+export default defineComponent({
   props: {
     boundingBox: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     }
   },
-  computed: {
-    cx (): EllipseItem['cx'] {
-      return this.boundingBox.x + this.rx;
-    },
-    cy (): EllipseItem['cy'] {
-      return this.boundingBox.y + this.ry;
-    },
-    rx (): EllipseItem['rx'] {
-      return this.boundingBox.width / 2;
-    },
-    ry (): EllipseItem['ry'] {
-      return this.boundingBox.height / 2;
-    },
-    strokeWidth (): number {
+  setup (props) {
+    const { boundingBox } = toRefs(props);
+
+    const rx = computed((): EllipseItem['rx'] => {
+      return boundingBox.value.width / 2;
+    });
+    const ry = computed((): EllipseItem['ry'] => {
+      return boundingBox.value.height / 2;
+    });
+    const cx = computed((): EllipseItem['cx'] => {
+      return boundingBox.value.x + rx.value;
+    });
+    const cy = computed((): EllipseItem['cy'] => {
+      return boundingBox.value.y + ry.value;
+    });
+    const strokeWidth = computed((): number => {
       return inverseScale(1, editor.getters.zoomRate());
-    }
+    });
+
+    return {
+      cx,
+      cy,
+      rx,
+      ry,
+      strokeWidth
+    };
   }
 });
 </script>

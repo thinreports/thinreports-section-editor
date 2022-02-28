@@ -13,63 +13,64 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import { BoundingBox } from '@/types';
 
-type Data = {
-  pointerDown: boolean;
-};
-
-export default Vue.extend({
-  name: 'StackViewItemModifier',
+export default defineComponent({
   props: {
     itemBounds: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     }
   },
-  data (): Data {
-    return {
-      pointerDown: false
-    };
-  },
-  computed: {
-    bounds (): BoundingBox {
-      return {
-        x: this.itemBounds.x - this.frameWidth / 2,
-        y: this.itemBounds.y - this.frameWidth / 2,
-        width: this.itemBounds.width + this.frameWidth,
-        height: this.itemBounds.height + this.frameWidth
-      };
-    },
-    frameWidth () {
+  setup (props, { emit }) {
+    const { itemBounds } = toRefs(props);
+
+    const pointerDown = ref<boolean>(false);
+
+    const frameWidth = computed(() => {
       return inverseScale(10, editor.getters.zoomRate());
-    }
-  },
-  methods: {
-    onPointerDown () {
-      this.pointerDown = true;
-    },
-    onPointerMove () {
-      if (this.pointerDown) {
-        this.emitModifierDrag();
-        this.pointerDown = false;
+    });
+    const bounds = computed((): BoundingBox => {
+      return {
+        x: itemBounds.value.x - frameWidth.value / 2,
+        y: itemBounds.value.y - frameWidth.value / 2,
+        width: itemBounds.value.width + frameWidth.value,
+        height: itemBounds.value.height + frameWidth.value
+      };
+    });
+
+    const emitModifierClick = () => {
+      emit('modifierClick');
+    };
+    const emitModifierDrag = () => {
+      emit('modifierDrag');
+    };
+    const onPointerDown = () => {
+      pointerDown.value = true;
+    };
+    const onPointerMove = () => {
+      if (pointerDown.value) {
+        emitModifierDrag();
+        pointerDown.value = false;
       }
-    },
-    onPointerUp () {
-      if (this.pointerDown) {
-        this.emitModifierClick();
+    };
+    const onPointerUp = () => {
+      if (pointerDown.value) {
+        emitModifierClick();
       }
-      this.pointerDown = false;
-    },
-    emitModifierClick () {
-      this.$emit('modifierClick');
-    },
-    emitModifierDrag () {
-      this.$emit('modifierDrag');
-    }
+      pointerDown.value = false;
+    };
+
+    return {
+      bounds,
+      frameWidth,
+      onPointerDown,
+      onPointerMove,
+      onPointerUp
+    };
   }
 });
 </script>

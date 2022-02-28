@@ -8,34 +8,40 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { TextOverflowStyle } from '@/types';
 
-export default Vue.extend({
-  name: 'OverflowProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<TextOverflowStyle>,
+      type: String as () => TextOverflowStyle,
       required: true
     }
   },
-  computed: {
-    options (): Option<TextOverflowStyle>[] {
+  setup (_, { emit }) {
+    const { i18n } = useI18n();
+
+    const options = computed((): Option<TextOverflowStyle>[] => {
       return [
-        { label: this.$tc('label.text.overflow.truncate'), value: 'truncate' },
-        { label: this.$tc('label.text.overflow.fit'), value: 'fit' },
-        { label: this.$tc('label.text.overflow.expand'), value: 'expand' }
+        { label: i18n.value.tc('label.text.overflow.truncate'), value: 'truncate' },
+        { label: i18n.value.tc('label.text.overflow.fit'), value: 'fit' },
+        { label: i18n.value.tc('label.text.overflow.expand'), value: 'expand' }
       ];
-    }
-  },
-  methods: {
-    update (value: TextOverflowStyle) {
-      this.$emit('change', value);
-    }
+    });
+
+    const update = (value: TextOverflowStyle) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

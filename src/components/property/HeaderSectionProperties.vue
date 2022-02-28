@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AutoStretchProperty from './properties/AutoStretchProperty.vue';
 import DisplayProperty from './properties/DisplayProperty.vue';
@@ -35,8 +35,7 @@ import IdProperty from './properties/IdProperty.vue';
 import { report } from '@/store';
 import { HeaderSection } from '@/types';
 
-export default Vue.extend({
-  name: 'HeaderSectionProperties',
+export default defineComponent({
   components: {
     AutoStretchProperty,
     DisplayProperty,
@@ -47,26 +46,36 @@ export default Vue.extend({
   },
   props: {
     section: {
-      type: Object as PropType<HeaderSection>,
+      type: Object as () => HeaderSection,
       required: true
     }
   },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateHeaderSection({ sectionUid: this.section.uid, key: 'id', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateHeaderSection({ sectionUid: this.section.uid, key: 'display', value });
-    },
-    updateHeight (value: number) {
-      report.actions.updateHeaderSection({ sectionUid: this.section.uid, key: 'height', value });
-    },
-    updateAutoStretch (value: boolean) {
-      report.actions.updateHeaderSection({ sectionUid: this.section.uid, key: 'autoStretch', value });
-    },
-    updateEveryPage (value: boolean) {
-      report.actions.updateHeaderSection({ sectionUid: this.section.uid, key: 'everyPage', value });
-    }
+  setup (props) {
+    const { section } = toRefs(props);
+
+    const updateId = (value: string) => {
+      report.actions.updateHeaderSection({ sectionUid: section.value.uid, key: 'id', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateHeaderSection({ sectionUid: section.value.uid, key: 'display', value });
+    };
+    const updateHeight = (value: number) => {
+      report.actions.updateHeaderSection({ sectionUid: section.value.uid, key: 'height', value });
+    };
+    const updateAutoStretch = (value: boolean) => {
+      report.actions.updateHeaderSection({ sectionUid: section.value.uid, key: 'autoStretch', value });
+    };
+    const updateEveryPage = (value: boolean) => {
+      report.actions.updateHeaderSection({ sectionUid: section.value.uid, key: 'everyPage', value });
+    };
+
+    return {
+      updateId,
+      updateDisplay,
+      updateHeight,
+      updateAutoStretch,
+      updateEveryPage
+    };
   }
 });
 </script>

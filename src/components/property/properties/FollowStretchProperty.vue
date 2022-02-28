@@ -8,18 +8,17 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
 import { Item } from '@/types';
 
-export default Vue.extend({
-  name: 'FollowStretchProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<Item['followStretch']>,
+      type: String as () => Item['followStretch'],
       required: true
     },
     ignoreHeight: {
@@ -27,20 +26,26 @@ export default Vue.extend({
       default: false
     }
   },
-  computed: {
-    options (): Option<Item['followStretch']>[] {
+  setup (props, { emit }) {
+    const { ignoreHeight } = toRefs(props);
+
+    const options = computed((): Option<Item['followStretch']>[] => {
       const options: Option<Item['followStretch']>[] = [
         { label: 'none', value: 'none' },
         { label: 'y', value: 'y' }
       ];
 
-      return this.ignoreHeight ? options : [...options, { label: 'height', value: 'height' }];
-    }
-  },
-  methods: {
-    update (value: Item['followStretch']) {
-      this.$emit('change', value);
-    }
+      return ignoreHeight.value ? options : [...options, { label: 'height', value: 'height' }];
+    });
+
+    const update = (value: Item['followStretch']) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

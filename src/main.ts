@@ -1,3 +1,4 @@
+import VueCompotisionAPI from '@vue/composition-api';
 import Vue from 'vue';
 import App from './App.vue';
 import i18n from './i18n';
@@ -7,6 +8,7 @@ import 'uikit/dist/css/uikit.min.css';
 import 'uikit/dist/js/uikit.min.js';
 
 Vue.config.productionTip = false;
+Vue.use(VueCompotisionAPI);
 
 new Vue({
   i18n,

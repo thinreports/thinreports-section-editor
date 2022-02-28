@@ -7,11 +7,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import CheckProperty from './base/CheckProperty.vue';
 
-export default Vue.extend({
-  name: 'AutoStretchProperty',
+export default defineComponent({
   components: {
     CheckProperty
   },
@@ -21,10 +20,16 @@ export default Vue.extend({
       required: true
     }
   },
-  methods: {
-    update () {
-      this.$emit('change', !this.value);
-    }
+  setup (props, { emit }) {
+    const { value } = toRefs(props);
+
+    const update = () => {
+      emit('change', !value.value);
+    };
+
+    return {
+      update
+    };
   }
 });
 </script>

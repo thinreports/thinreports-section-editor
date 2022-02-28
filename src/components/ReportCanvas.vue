@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { calcPlus } from '../lib/strict-calculator';
 import { report } from '../store';
 import SectionCanvas from './SectionCanvas.vue';
@@ -44,46 +44,52 @@ type SectionWithPosition = {
   top: number;
 };
 
-export default Vue.extend({
-  name: 'ReportCanvas',
+export default defineComponent({
   components: {
     SectionCanvas,
     SectionDivider,
     CanvasSelector
   },
-  computed: {
-    sectionWithPositions (): SectionWithPosition[] {
-      const sections: {
+  setup () {
+    const sections = computed(() => report.getters.sections());
+    const sectionWithPositions = computed((): SectionWithPosition[] => {
+      const result: {
         schema: Section;
         top: number;
       }[] = [];
 
       let top = 0;
-      this.sections.forEach(section => {
-        sections.push({ schema: section, top });
+      sections.value.forEach(section => {
+        result.push({ schema: section, top });
         top = calcPlus(top, section.height);
       });
 
-      return sections;
-    },
-    sections: () => report.getters.sections(),
-    contentSize: (): Size => report.getters.contentSize()
-  },
-  methods: {
-    activateSection (uid: SectionUid) {
+      return result;
+    });
+    const contentSize = computed((): Size => report.getters.contentSize());
+
+    const activateSection = (uid: SectionUid) => {
       report.actions.activateEntity({ uid, type: 'section' });
-    },
-    selectorBounds ({ schema, top }: SectionWithPosition): BoundingBox {
+    };
+    const selectorBounds = ({ schema, top }: SectionWithPosition): BoundingBox => {
       return {
         x: 0,
         y: top,
-        width: this.contentSize.width,
+        width: contentSize.value.width,
         height: schema.height
       };
-    },
-    isLastSection (index: number): boolean {
-      return this.sections.length === index + 1;
-    }
+    };
+    const isLastSection = (index: number): boolean => {
+      return sections.value.length === index + 1;
+    };
+
+    return {
+      sectionWithPositions,
+      contentSize,
+      activateSection,
+      selectorBounds,
+      isLastSection
+    };
   }
 });
 </script>

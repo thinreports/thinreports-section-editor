@@ -52,7 +52,7 @@
 
     <ToolButton
       description="Image"
-      @click="selectImage"
+      @click="openSelectImage"
     >
       <ItemIcon type="image" />
     </ToolButton>
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { selectImage } from '../../lib/select-image';
 import { editor, report } from '../../store';
 import ItemIcon from '../icons/ItemIcon.vue';
@@ -87,27 +87,25 @@ import MenuDropdown from './MenuDropdown.vue';
 import ToolButton from './ToolButton.vue';
 import { ToolType } from '@/types';
 
-export default Vue.extend({
-  name: 'ToolSelect',
+export default defineComponent({
   components: {
     MenuDropdown,
     ToolButton,
     ItemIcon,
     LocaleMenu
   },
-  computed: {
-    activeTool () {
+  setup () {
+    const activeTool = computed(() => {
       return editor.state.activeTool;
-    }
-  },
-  methods: {
-    activateTool (tool: ToolType) {
+    });
+
+    const activateTool = (tool: ToolType) => {
       editor.actions.activateTool({ tool });
-    },
-    isActiveTool (tool: ToolType) {
-      return this.activeTool === tool;
-    },
-    async selectImage () {
+    };
+    const isActiveTool = (tool: ToolType) => {
+      return activeTool.value === tool;
+    };
+    const openSelectImage = async () => {
       const targetCanvas = report.getters.activeOrFirstCanvas();
 
       if (!targetCanvas) return;
@@ -128,7 +126,13 @@ export default Vue.extend({
           base64: imageData.base64
         }
       });
-    }
+    };
+
+    return {
+      activateTool,
+      isActiveTool,
+      openSelectImage
+    };
   }
 });
 </script>

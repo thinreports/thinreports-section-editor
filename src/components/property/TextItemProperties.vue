@@ -89,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
 import DescriptionProperty from './properties/DescriptionProperty.vue';
@@ -115,8 +115,7 @@ import WidthProperty from './properties/WidthProperty.vue';
 import { report } from '@/store';
 import { TextItem, BuiltinFontFamily, ItemTextStyle } from '@/types';
 
-export default Vue.extend({
-  name: 'TextItemProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -143,102 +142,132 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<TextItem>,
+      type: Object as () => TextItem,
       required: true
     }
   },
-  computed: {
-    text () {
-      return this.item.texts.join('\n');
-    },
-    isBold () {
-      return this.item.style.fontStyle.includes('bold');
-    },
-    isItalic () {
-      return this.item.style.fontStyle.includes('italic');
-    },
-    isUnderline () {
-      return this.item.style.fontStyle.includes('underline');
-    },
-    isLinethrough () {
-      return this.item.style.fontStyle.includes('linethrough');
-    }
-  },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'id', value });
-    },
-    updateDescription (value: string) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'description', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'display', value });
-    },
-    updateHeight (value: string) {
-      report.actions.updateTextItemWith(this.item.uid, item => {
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const text = computed(() => {
+      return item.value.texts.join('\n');
+    });
+    const isBold = computed(() => {
+      return item.value.style.fontStyle.includes('bold');
+    });
+    const isItalic = computed(() => {
+      return item.value.style.fontStyle.includes('italic');
+    });
+    const isUnderline = computed(() => {
+      return item.value.style.fontStyle.includes('underline');
+    });
+    const isLinethrough = computed(() => {
+      return item.value.style.fontStyle.includes('linethrough');
+    });
+
+    const updateId = (value: string) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'id', value });
+    };
+    const updateDescription = (value: string) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'description', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateHeight = (value: string) => {
+      report.actions.updateTextItemWith(item.value.uid, item => {
         item.height = Number(value);
       });
-    },
-    updateWidth (value: string) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'width', value: Number(value) });
-    },
-    updateX (value: string) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'x', value: Number(value) });
-    },
-    updateY (value: string) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'y', value: Number(value) });
-    },
-    updateFollowStretch (value: TextItem['followStretch']) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'followStretch', value });
-    },
-    updateAffectBottomMargin (value: boolean) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'affectBottomMargin', value });
-    },
-    updateTexts (value: string) {
-      report.actions.updateTextItemWith(this.item.uid, item => {
+    };
+    const updateWidth = (value: string) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'width', value: Number(value) });
+    };
+    const updateX = (value: string) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'x', value: Number(value) });
+    };
+    const updateY = (value: string) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'y', value: Number(value) });
+    };
+    const updateFollowStretch = (value: TextItem['followStretch']) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'followStretch', value });
+    };
+    const updateAffectBottomMargin = (value: boolean) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'affectBottomMargin', value });
+    };
+    const updateTexts = (value: string) => {
+      report.actions.updateTextItemWith(item.value.uid, item => {
         item.texts = value.split('\n');
       });
-    },
-    updateColor (value: string) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, color: value } });
-    },
-    updateFontSize (value: string) {
-      report.actions.updateTextItemWith(this.item.uid, item => {
+    };
+    const updateColor = (value: string) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, color: value } });
+    };
+    const updateFontSize = (value: string) => {
+      report.actions.updateTextItemWith(item.value.uid, item => {
         item.fontSize = Number(value);
       });
-    },
-    updateFontFamily (value: BuiltinFontFamily) {
-      report.actions.updateTextItemWith(this.item.uid, item => {
+    };
+    const updateFontFamily = (value: BuiltinFontFamily) => {
+      report.actions.updateTextItemWith(item.value.uid, item => {
         item.fontFamily = value;
       });
-    },
-    updateTextAlign (value: ItemTextStyle['textAlign']) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, textAlign: value } });
-    },
-    updateVerticalAlign (value: ItemTextStyle['verticalAlign']) {
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, verticalAlign: value } });
-    },
-    updateLineHeightRatio (value: string) {
-      report.actions.updateTextItemWith(this.item.uid, item => {
+    };
+    const updateTextAlign = (value: ItemTextStyle['textAlign']) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, textAlign: value } });
+    };
+    const updateVerticalAlign = (value: ItemTextStyle['verticalAlign']) => {
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, verticalAlign: value } });
+    };
+    const updateLineHeightRatio = (value: string) => {
+      report.actions.updateTextItemWith(item.value.uid, item => {
         item.lineHeightRatio = value !== '' ? Number(value) : '';
       });
-    },
-    updateLetterSpacing (value: string) {
+    };
+    const updateLetterSpacing = (value: string) => {
       const letterSpacing = value !== '' ? Number(value) : '';
-      report.actions.updateTextItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, letterSpacing } });
-    },
-    updateBold (value: boolean) {
-      report.actions.updateTextItemWith(this.item.uid, item => { item.bold = value; });
-    },
-    updateItalic (value: boolean) {
-      report.actions.updateTextItemWith(this.item.uid, item => { item.italic = value; });
-    },
-    updateUnderline (value: boolean) {
-      report.actions.updateTextItemWith(this.item.uid, item => { item.underline = value; });
-    },
-    updateLinethrough (value: boolean) {
-      report.actions.updateTextItemWith(this.item.uid, item => { item.linethrough = value; });
-    }
+      report.actions.updateTextItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, letterSpacing } });
+    };
+    const updateBold = (value: boolean) => {
+      report.actions.updateTextItemWith(item.value.uid, item => { item.bold = value; });
+    };
+    const updateItalic = (value: boolean) => {
+      report.actions.updateTextItemWith(item.value.uid, item => { item.italic = value; });
+    };
+    const updateUnderline = (value: boolean) => {
+      report.actions.updateTextItemWith(item.value.uid, item => { item.underline = value; });
+    };
+    const updateLinethrough = (value: boolean) => {
+      report.actions.updateTextItemWith(item.value.uid, item => { item.linethrough = value; });
+    };
+
+    return {
+      text,
+      isBold,
+      isItalic,
+      isUnderline,
+      isLinethrough,
+      updateId,
+      updateDescription,
+      updateDisplay,
+      updateHeight,
+      updateWidth,
+      updateX,
+      updateY,
+      updateFollowStretch,
+      updateAffectBottomMargin,
+      updateTexts,
+      updateColor,
+      updateFontSize,
+      updateFontFamily,
+      updateTextAlign,
+      updateVerticalAlign,
+      updateLineHeightRatio,
+      updateLetterSpacing,
+      updateBold,
+      updateItalic,
+      updateUnderline,
+      updateLinethrough
+    };
   }
 });
 </script>

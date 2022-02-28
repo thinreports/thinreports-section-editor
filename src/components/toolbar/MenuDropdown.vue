@@ -9,7 +9,7 @@
     </button>
 
     <div
-      ref="dropdown"
+      ref="refDropdown"
       uk-dropdown="mode: click"
       duration="0"
       delay-hide="0"
@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref } from '@vue/composition-api';
 import UIkit from 'uikit';
-import Vue from 'vue';
 import EditButtons from './EditButtons.vue';
 import FileButtons from './FileButtons.vue';
 import LocationButtons from './LocationButtons.vue';
@@ -42,8 +42,7 @@ import SectionButtons from './SectionButtons.vue';
 import StackViewButtons from './StackViewButtons.vue';
 import ZoomButtons from './ZoomButtons.vue';
 
-export default Vue.extend({
-  name: 'MenuDropdown',
+export default defineComponent({
   components: {
     FileButtons,
     EditButtons,
@@ -58,12 +57,19 @@ export default Vue.extend({
       default: false
     }
   },
-  methods: {
-    handleMenuButtonClick (e: MouseEvent) {
+  setup () {
+    const refDropdown = ref(null);
+
+    const handleMenuButtonClick = (e: MouseEvent) => {
       if (!e.target || !(e.target as HTMLElement).closest('.th-menu-button')) return;
 
-      UIkit.dropdown(this.$refs.dropdown).hide();
-    }
+      UIkit.dropdown(refDropdown.value).hide();
+    };
+
+    return {
+      handleMenuButtonClick,
+      refDropdown
+    };
   }
 });
 </script>

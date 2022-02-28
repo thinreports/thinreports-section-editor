@@ -10,23 +10,26 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import { LineItem } from '@/types';
 
-export default Vue.extend({
-  name: 'LineItemSelector',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<LineItem>,
+      type: Object as () => LineItem,
       required: true
     }
   },
-  computed: {
-    strokeWidth (): number {
+  setup () {
+    const strokeWidth = computed((): number => {
       return inverseScale(10, editor.getters.zoomRate());
-    }
+    });
+
+    return {
+      strokeWidth
+    };
   }
 });
 </script>

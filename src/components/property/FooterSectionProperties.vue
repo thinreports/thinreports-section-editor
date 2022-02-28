@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AutoStretchProperty from './properties/AutoStretchProperty.vue';
 import DisplayProperty from './properties/DisplayProperty.vue';
@@ -30,8 +30,7 @@ import IdProperty from './properties/IdProperty.vue';
 import { report } from '@/store';
 import { FooterSection } from '@/types';
 
-export default Vue.extend({
-  name: 'FooterSectionProperties',
+export default defineComponent({
   components: {
     IdProperty,
     AutoStretchProperty,
@@ -41,23 +40,32 @@ export default Vue.extend({
   },
   props: {
     section: {
-      type: Object as PropType<FooterSection>,
+      type: Object as () => FooterSection,
       required: true
     }
   },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateFooterSection({ sectionUid: this.section.uid, key: 'id', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateFooterSection({ sectionUid: this.section.uid, key: 'display', value });
-    },
-    updateHeight (value: number) {
-      report.actions.updateFooterSection({ sectionUid: this.section.uid, key: 'height', value });
-    },
-    updateAutoStretch (value: boolean) {
-      report.actions.updateFooterSection({ sectionUid: this.section.uid, key: 'autoStretch', value });
-    }
+  setup (props) {
+    const { section } = toRefs(props);
+
+    const updateId = (value: string) => {
+      report.actions.updateFooterSection({ sectionUid: section.value.uid, key: 'id', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateFooterSection({ sectionUid: section.value.uid, key: 'display', value });
+    };
+    const updateHeight = (value: number) => {
+      report.actions.updateFooterSection({ sectionUid: section.value.uid, key: 'height', value });
+    };
+    const updateAutoStretch = (value: boolean) => {
+      report.actions.updateFooterSection({ sectionUid: section.value.uid, key: 'autoStretch', value });
+    };
+
+    return {
+      updateId,
+      updateDisplay,
+      updateHeight,
+      updateAutoStretch
+    };
   }
 });
 </script>

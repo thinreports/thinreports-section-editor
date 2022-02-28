@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { calcPlus } from '../../lib/strict-calculator';
 import { report, operator, editor } from '../../store';
 import CanvasDrawer from '../base/CanvasDrawer.vue';
@@ -38,8 +38,7 @@ import TextBlockItem from './TextBlockItem.vue';
 import TextItem from './TextItem.vue';
 import { StackViewRow, AnyItem, ItemType, Translation, BoundingBox } from '@/types';
 
-export default Vue.extend({
-  name: 'StackViewItemRow',
+export default defineComponent({
   components: {
     RectItem,
     EllipseItem,
@@ -53,52 +52,48 @@ export default Vue.extend({
   },
   props: {
     row: {
-      type: Object as PropType<StackViewRow>,
+      type: Object as () => StackViewRow,
       required: true
     },
     bounds: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     },
     sectionTranslation: {
-      type: Object as PropType<Translation>,
+      type: Object as () => Translation,
       required: true
     }
   },
-  data () {
-    return {
-      pointerDown: false
-    };
-  },
-  computed: {
-    isDrawMode: () => editor.getters.isDrawMode(),
-    transform (): string {
-      return `translate(${Object.values(this.translation).join(',')})`;
-    },
-    translation (): Translation {
-      return { x: this.bounds.x, y: this.bounds.y };
-    },
-    translationByReport (): Translation {
+  setup (props) {
+    const { row, bounds, sectionTranslation } = toRefs(props);
+
+    const isDrawMode = computed(() => editor.getters.isDrawMode());
+    const translation = computed((): Translation => {
+      return { x: bounds.value.x, y: bounds.value.y };
+    });
+    const transform = computed((): string => {
+      return `translate(${Object.values(translation.value).join(',')})`;
+    });
+    const translationByReport = computed((): Translation => {
       return {
-        x: calcPlus(this.translation.x, this.sectionTranslation.x),
-        y: calcPlus(this.translation.y, this.sectionTranslation.y)
+        x: calcPlus(translation.value.x, sectionTranslation.value.x),
+        y: calcPlus(translation.value.y, sectionTranslation.value.y)
       };
-    },
-    isActive (): boolean {
-      return report.getters.isActiveStackViewRow(this.row.uid);
-    },
-    items (): AnyItem[] {
-      return this.row.items.map(uid => report.getters.findItem(uid));
-    }
-  },
-  methods: {
-    startDragItem (item: AnyItem) {
+    });
+    const isActive = computed((): boolean => {
+      return report.getters.isActiveStackViewRow(row.value.uid);
+    });
+    const items = computed((): AnyItem[] => {
+      return row.value.items.map(uid => report.getters.findItem(uid));
+    });
+
+    const startDragItem = (item: AnyItem) => {
       operator.actions.startItemDrag({
         itemUid: item.uid,
-        translation: this.translationByReport
+        translation: translationByReport.value
       });
-    },
-    startDrawItem () {
+    };
+    const startDrawItem = () => {
       const itemType = editor.state.activeTool as ItemType;
 
       if (itemType === 'stack-view') return;
@@ -106,10 +101,19 @@ export default Vue.extend({
       operator.actions.startItemDraw({
         itemType,
         targetType: 'stack-view-row',
-        targetUid: this.row.uid,
-        translation: this.translationByReport
+        targetUid: row.value.uid,
+        translation: translationByReport.value
       });
-    }
+    };
+
+    return {
+      isDrawMode,
+      transform,
+      isActive,
+      items,
+      startDragItem,
+      startDrawItem
+    };
   }
 });
 </script>

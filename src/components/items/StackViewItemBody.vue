@@ -12,23 +12,26 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import { BoundingBox } from '@/types';
 
-export default Vue.extend({
-  name: 'StackViewItemBody',
+export default defineComponent({
   props: {
     itemBounds: {
-      type: Object as PropType<BoundingBox>,
+      type: Object as () => BoundingBox,
       required: true
     }
   },
-  computed: {
-    strokeWidth (): number {
+  setup () {
+    const strokeWidth = computed((): number => {
       return inverseScale(1, editor.getters.zoomRate());
-    }
+    });
+
+    return {
+      strokeWidth
+    };
   }
 });
 </script>

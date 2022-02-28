@@ -15,10 +15,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'TextAreaProperty',
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -29,10 +28,14 @@ export default Vue.extend({
       required: true
     }
   },
-  methods: {
-    change (value: string) {
-      this.$emit('change', value);
-    }
+  setup (_, { emit }) {
+    const change = (value: string) => {
+      emit('change', value);
+    };
+
+    return {
+      change
+    };
   }
 });
 </script>

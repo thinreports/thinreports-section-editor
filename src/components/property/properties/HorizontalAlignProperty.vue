@@ -8,34 +8,40 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { HorizontalAlign } from '@/types';
 
-export default Vue.extend({
-  name: 'HorizontalAlignProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<HorizontalAlign>,
+      type: String as () => HorizontalAlign,
       required: true
     }
   },
-  computed: {
-    options (): Option<HorizontalAlign>[] {
+  setup (_, { emit }) {
+    const { i18n } = useI18n();
+
+    const options = computed((): Option<HorizontalAlign>[] => {
       return [
-        { label: this.$tc('label.align.horizontal.left'), value: 'left' },
-        { label: this.$tc('label.align.horizontal.center'), value: 'center' },
-        { label: this.$tc('label.align.horizontal.right'), value: 'right' }
+        { label: i18n.value.tc('label.align.horizontal.left'), value: 'left' },
+        { label: i18n.value.tc('label.align.horizontal.center'), value: 'center' },
+        { label: i18n.value.tc('label.align.horizontal.right'), value: 'right' }
       ];
-    }
-  },
-  methods: {
-    update (value: HorizontalAlign) {
-      this.$emit('change', value);
-    }
+    });
+
+    const update = (value: HorizontalAlign) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

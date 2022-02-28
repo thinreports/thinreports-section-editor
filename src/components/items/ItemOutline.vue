@@ -16,15 +16,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { BoundsTransformer } from '../../lib/bounds-transformer';
 import BoxItemOutline from './BoxItemOutline.vue';
 import EllipseItemOutline from './EllipseItemOutline.vue';
 import LineItemOutline from './LineItemOutline.vue';
 import { BoundingPoints, ItemType, BoundingBox } from '@/types';
 
-export default Vue.extend({
-  name: 'ItemOutline',
+export default defineComponent({
   components: {
     EllipseItemOutline,
     BoxItemOutline,
@@ -32,18 +31,24 @@ export default Vue.extend({
   },
   props: {
     itemType: {
-      type: String as PropType<ItemType>,
+      type: String as () => ItemType,
       required: true
     },
     boundingPoints: {
-      type: Object as PropType<BoundingPoints>,
+      type: Object as () => BoundingPoints,
       required: true
     }
   },
-  computed: {
-    boundingBox (): BoundingBox {
-      return new BoundsTransformer(this.boundingPoints).toBBox();
-    }
+  setup (props) {
+    const { boundingPoints } = toRefs(props);
+
+    const boundingBox = computed((): BoundingBox => {
+      return new BoundsTransformer(boundingPoints.value).toBBox();
+    });
+
+    return {
+      boundingBox
+    };
   }
 });
 </script>

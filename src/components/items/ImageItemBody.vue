@@ -11,22 +11,27 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { ImageItem } from '@/types';
 
-export default Vue.extend({
-  name: 'ImageItemBody',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<ImageItem>,
+      type: Object as () => ImageItem,
       required: true
     }
   },
-  computed: {
-    href (): string {
-      const data = this.item.data;
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const href = computed((): string => {
+      const data = item.value.data;
       return `data:${data.mimeType};base64,${data.base64}`;
-    }
+    });
+
+    return {
+      href
+    };
   }
 });
 </script>

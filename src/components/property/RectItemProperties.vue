@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
 import CornerRadiusProperty from './properties/CornerRadiusProperty.vue';
@@ -80,8 +80,7 @@ import WidthProperty from './properties/WidthProperty.vue';
 import { report } from '@/store';
 import { RectItem } from '@/types';
 
-export default Vue.extend({
-  name: 'RectItemProperties',
+export default defineComponent({
   components: {
     DisplayProperty,
     IdProperty,
@@ -101,53 +100,72 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<RectItem>,
+      type: Object as () => RectItem,
       required: true
     }
   },
-  methods: {
-    updateId (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'id', value });
-    },
-    updateDescription (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'description', value });
-    },
-    updateDisplay (value: boolean) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'display', value });
-    },
-    updateHeight (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'height', value: Number(value) });
-    },
-    updateWidth (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'width', value: Number(value) });
-    },
-    updateX (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'x', value: Number(value) });
-    },
-    updateY (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'y', value: Number(value) });
-    },
-    updateFollowStretch (value: RectItem['followStretch']) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'followStretch', value });
-    },
-    updateAffectBottomMargin (value: boolean) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'affectBottomMargin', value });
-    },
-    updateFillColor (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, fillColor: value } });
-    },
-    updateBorderColor (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderColor: value } });
-    },
-    updateBorderWidth (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderWidth: Number(value) } });
-    },
-    updateBorderStyle (value: RectItem['style']['borderStyle']) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'style', value: { ...this.item.style, borderStyle: value } });
-    },
-    updateBorderRadius (value: string) {
-      report.actions.updateRectItem({ uid: this.item.uid, key: 'borderRadius', value: Number(value) });
-    }
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const updateId = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'id', value });
+    };
+    const updateDescription = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'description', value });
+    };
+    const updateDisplay = (value: boolean) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateHeight = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'height', value: Number(value) });
+    };
+    const updateWidth = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'width', value: Number(value) });
+    };
+    const updateX = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'x', value: Number(value) });
+    };
+    const updateY = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'y', value: Number(value) });
+    };
+    const updateFollowStretch = (value: RectItem['followStretch']) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'followStretch', value });
+    };
+    const updateAffectBottomMargin = (value: boolean) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'affectBottomMargin', value });
+    };
+    const updateFillColor = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, fillColor: value } });
+    };
+    const updateBorderColor = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderColor: value } });
+    };
+    const updateBorderWidth = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderWidth: Number(value) } });
+    };
+    const updateBorderStyle = (value: RectItem['style']['borderStyle']) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'style', value: { ...item.value.style, borderStyle: value } });
+    };
+    const updateBorderRadius = (value: string) => {
+      report.actions.updateRectItem({ uid: item.value.uid, key: 'borderRadius', value: Number(value) });
+    };
+
+    return {
+      updateId,
+      updateDescription,
+      updateDisplay,
+      updateHeight,
+      updateWidth,
+      updateX,
+      updateY,
+      updateFollowStretch,
+      updateAffectBottomMargin,
+      updateFillColor,
+      updateBorderColor,
+      updateBorderWidth,
+      updateBorderStyle,
+      updateBorderRadius
+    };
   }
 });
 </script>

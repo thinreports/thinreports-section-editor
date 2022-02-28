@@ -21,14 +21,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { report } from '../store';
 import ItemProperties from './property/ItemProperties.vue';
 import SectionProperties from './property/SectionProperties.vue';
 import StackViewRowProperties from './property/StackViewRowProperties.vue';
 
-export default Vue.extend({
-  name: 'PropertyPane',
+export default defineComponent({
   components: {
     ItemProperties,
     SectionProperties,
@@ -40,10 +39,16 @@ export default Vue.extend({
       required: true
     }
   },
-  computed: {
-    activeItem: () => report.getters.activeItem(),
-    activeStackViewRow: () => report.getters.activeStackViewRow(),
-    activeSection: () => report.getters.activeSection()
+  setup () {
+    const activeItem = computed(() => report.getters.activeItem());
+    const activeStackViewRow = computed(() => report.getters.activeStackViewRow());
+    const activeSection = computed(() => report.getters.activeSection());
+
+    return {
+      activeItem,
+      activeStackViewRow,
+      activeSection
+    };
   }
 });
 </script>

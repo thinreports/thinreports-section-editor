@@ -16,18 +16,17 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import ItemIdLabel from './ItemIdLabel.vue';
 import { TextBlockItem } from '@/types';
 
-export default Vue.extend({
-  name: 'TextBlockItemBody',
+export default defineComponent({
   components: {
     ItemIdLabel
   },
   props: {
     item: {
-      type: Object as PropType<TextBlockItem>,
+      type: Object as () => TextBlockItem,
       required: true
     }
   }

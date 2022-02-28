@@ -10,23 +10,28 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import { LineItem } from '@/types';
 
-export default Vue.extend({
-  name: 'LineItemHeightlighter',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<LineItem>,
+      type: Object as () => LineItem,
       required: true
     }
   },
-  computed: {
-    strokeWidth (): number {
-      return this.item.style.borderWidth + inverseScale(5, editor.getters.zoomRate());
-    }
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const strokeWidth = computed((): number => {
+      return item.value.style.borderWidth + inverseScale(5, editor.getters.zoomRate());
+    });
+
+    return {
+      strokeWidth
+    };
   }
 });
 </script>

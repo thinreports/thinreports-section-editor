@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { report } from '../../store';
 import ItemEntity from './ItemEntity.vue';
 import StackViewItemBody from './StackViewItemBody.vue';
@@ -39,8 +39,7 @@ import StackViewItemModifier from './StackViewItemModifier.vue';
 import StackViewItemRows from './StackViewItemRows.vue';
 import { StackViewItem, BoundingBox, Translation } from '@/types';
 
-export default Vue.extend({
-  name: 'StackViewItem',
+export default defineComponent({
   components: {
     ItemEntity,
     StackViewItemBody,
@@ -49,34 +48,42 @@ export default Vue.extend({
   },
   props: {
     item: {
-      type: Object as PropType<StackViewItem>,
+      type: Object as () => StackViewItem,
       required: true
     },
     sectionTranslation: {
-      type: Object as PropType<Translation>,
+      type: Object as () => Translation,
       required: true
     }
   },
-  computed: {
-    isActive (): boolean {
-      return report.getters.isActiveStackViewTree(this.item.uid);
-    },
-    bounds (): BoundingBox {
+  setup (props, { emit }) {
+    const { item } = toRefs(props);
+
+    const isActive = computed((): boolean => {
+      return report.getters.isActiveStackViewTree(item.value.uid);
+    });
+    const bounds = computed((): BoundingBox => {
       return {
-        x: this.item.x,
-        y: this.item.y,
-        width: this.item.width,
-        height: report.getters.heightOfStackView(this.item.uid)
+        x: item.value.x,
+        y: item.value.y,
+        width: item.value.width,
+        height: report.getters.heightOfStackView(item.value.uid)
       };
-    }
-  },
-  methods: {
-    dragStart () {
-      this.$emit('itemDragStart', this.item);
-    },
-    activate () {
-      report.actions.activateEntity({ uid: this.item.uid, type: 'item' });
-    }
+    });
+
+    const dragStart = () => {
+      emit('itemDragStart', item.value);
+    };
+    const activate = () => {
+      report.actions.activateEntity({ uid: item.value.uid, type: 'item' });
+    };
+
+    return {
+      isActive,
+      bounds,
+      dragStart,
+      activate
+    };
   }
 });
 </script>

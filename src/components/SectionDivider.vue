@@ -10,12 +10,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { inverseScale } from '../lib/inverse-scale';
 import { editor } from '../store';
 
-export default Vue.extend({
-  name: 'SectionDivider',
+export default defineComponent({
   props: {
     top: {
       type: Number,
@@ -26,10 +25,14 @@ export default Vue.extend({
       required: true
     }
   },
-  computed: {
-    strokeWidth (): number {
+  setup () {
+    const strokeWidth = computed((): number => {
       return inverseScale(1, editor.getters.zoomRate());
-    }
+    });
+
+    return {
+      strokeWidth
+    };
   }
 });
 </script>

@@ -10,33 +10,40 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { calcDiv, calcPlus } from '../../lib/strict-calculator';
 import { editor } from '../../store';
 import { EllipseItem } from '@/types';
 
-export default Vue.extend({
-  name: 'EllipseItemHeightlighter',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<EllipseItem>,
+      type: Object as () => EllipseItem,
       required: true
     }
   },
-  computed: {
-    rx (): number {
-      return calcPlus(this.item.rx, this.extraSize);
-    },
-    ry (): number {
-      return calcPlus(this.item.ry, this.extraSize);
-    },
-    strokeWidth (): number {
+  setup (props) {
+    const { item } = toRefs(props);
+
+    const strokeWidth = computed((): number => {
       return inverseScale(3, editor.getters.zoomRate());
-    },
-    extraSize (): number {
-      return calcPlus(calcDiv(this.item.style.borderWidth, 2), calcDiv(this.strokeWidth, 2));
-    }
+    });
+    const extraSize = computed((): number => {
+      return calcPlus(calcDiv(item.value.style.borderWidth, 2), calcDiv(strokeWidth.value, 2));
+    });
+    const rx = computed((): number => {
+      return calcPlus(item.value.rx, extraSize.value);
+    });
+    const ry = computed((): number => {
+      return calcPlus(item.value.ry, extraSize.value);
+    });
+
+    return {
+      rx,
+      ry,
+      strokeWidth
+    };
   }
 });
 </script>

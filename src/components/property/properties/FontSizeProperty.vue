@@ -7,25 +7,28 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { ItemTextStyle } from '../../../types';
 import TextProperty from '@/components/property/properties/base/TextProperty.vue';
 
-export default Vue.extend({
-  name: 'FontSizeProperty',
+export default defineComponent({
   components: {
     TextProperty
   },
   props: {
     value: {
-      type: Number as PropType<ItemTextStyle['fontSize']>,
+      type: Number as () => ItemTextStyle['fontSize'],
       required: true
     }
   },
-  methods: {
-    update (value: string) {
-      this.$emit('change', value);
-    }
+  setup (_, { emit }) {
+    const update = (value: string) => {
+      emit('change', value);
+    };
+
+    return {
+      update
+    };
   }
 });
 </script>

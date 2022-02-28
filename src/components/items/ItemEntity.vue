@@ -10,52 +10,50 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { editor } from '../../store';
 import { AnyItem } from '@/types';
 
-type Data = {
-  pointerDown: boolean;
-};
-
-export default Vue.extend({
-  name: 'ItemEntity',
+export default defineComponent({
   props: {
     item: {
-      type: Object as PropType<AnyItem>,
+      type: Object as () => AnyItem,
       required: true
     }
   },
-  data (): Data {
-    return {
-      pointerDown: false
-    };
-  },
-  computed: {
-    isSelectMode (): boolean {
+  setup (_, { emit }) {
+    const pointerDown = ref<boolean>(false);
+
+    const isSelectMode = computed((): boolean => {
       return editor.getters.isSelectMode();
-    }
-  },
-  methods: {
-    onPointerDown () {
-      this.pointerDown = true;
-      this.emitItemClick();
-    },
-    onPointerMove () {
-      if (this.pointerDown) {
-        this.emitItemDrag();
-        this.pointerDown = false;
+    });
+
+    const emitItemClick = () => {
+      emit('itemClick');
+    };
+    const emitItemDrag = () => {
+      emit('itemDrag');
+    };
+    const onPointerDown = () => {
+      pointerDown.value = true;
+      emitItemClick();
+    };
+    const onPointerMove = () => {
+      if (pointerDown.value) {
+        emitItemDrag();
+        pointerDown.value = false;
       }
-    },
-    onPointerUp () {
-      this.pointerDown = false;
-    },
-    emitItemClick () {
-      this.$emit('itemClick');
-    },
-    emitItemDrag () {
-      this.$emit('itemDrag');
-    }
+    };
+    const onPointerUp = () => {
+      pointerDown.value = false;
+    };
+
+    return {
+      isSelectMode,
+      onPointerDown,
+      onPointerMove,
+      onPointerUp
+    };
   }
 });
 </script>

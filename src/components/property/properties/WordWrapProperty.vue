@@ -8,33 +8,39 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { TextWordWrapStyle } from '@/types';
 
-export default Vue.extend({
-  name: 'WordWrapProperty',
+export default defineComponent({
   components: {
     SelectProperty
   },
   props: {
     value: {
-      type: String as PropType<TextWordWrapStyle>,
+      type: String as () => TextWordWrapStyle,
       required: true
     }
   },
-  computed: {
-    options (): Option<TextWordWrapStyle>[] {
+  setup (_, { emit }) {
+    const { i18n } = useI18n();
+
+    const options = computed((): Option<TextWordWrapStyle>[] => {
       return [
-        { label: this.$tc('label.text.word_wrap_none'), value: 'none' },
-        { label: this.$tc('label.text.word_wrap_break_word'), value: 'break-word' }
+        { label: i18n.value.tc('label.text.word_wrap_none'), value: 'none' },
+        { label: i18n.value.tc('label.text.word_wrap_break_word'), value: 'break-word' }
       ];
-    }
-  },
-  methods: {
-    update (value: TextWordWrapStyle) {
-      this.$emit('change', value);
-    }
+    });
+
+    const update = (value: TextWordWrapStyle) => {
+      emit('change', value);
+    };
+
+    return {
+      options,
+      update
+    };
   }
 });
 </script>

@@ -28,22 +28,28 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { editor } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
 
-export default Vue.extend({
-  name: 'EditButtons',
+export default defineComponent({
   components: {
     MenuDropdownSubTree,
     MenuDropdownButton
   },
-  methods: {
-    setZoomRate: (rate: number) => editor.actions.setZoomRate(rate),
-    resetZoom: () => editor.actions.resetZoom(),
-    zoomIn: () => editor.actions.zoomIn(),
-    zoomOut: () => editor.actions.zoomOut()
+  setup () {
+    const setZoomRate = (rate: number) => editor.actions.setZoomRate(rate);
+    const resetZoom = () => editor.actions.resetZoom();
+    const zoomIn = () => editor.actions.zoomIn();
+    const zoomOut = () => editor.actions.zoomOut();
+
+    return {
+      setZoomRate,
+      resetZoom,
+      zoomIn,
+      zoomOut
+    };
   }
 });
 </script>

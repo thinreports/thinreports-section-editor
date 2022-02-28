@@ -39,38 +39,36 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { history, editor, report } from '../../store';
 import { CopiedAnyItem } from '../../types';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';
 
-export default Vue.extend({
-  name: 'EditButtons',
+export default defineComponent({
   components: {
     MenuDropdownSubTree,
     MenuDropdownButton
   },
-  computed: {
-    undoable: () => history.getters.undoable(),
-    redoable: () => history.getters.redoable(),
-    activeEntityExists: () => report.getters.activeEntityExists()
-  },
-  methods: {
-    undo: () => history.actions.undo(),
-    redo: () => history.actions.redo(),
-    cut () {
+  setup () {
+    const undoable = computed(() => history.getters.undoable());
+    const redoable = computed(() => history.getters.redoable());
+    const activeEntityExists = computed(() => report.getters.activeEntityExists());
+
+    const undo = () => history.actions.undo();
+    const redo = () => history.actions.redo();
+    const cut = () => {
       const item = report.getters.activeItem();
       if (!item) return;
       editor.actions.setClipboard(report.getters.copiedItem(item.uid));
       report.actions.removeActiveItem();
-    },
-    copy () {
+    };
+    const copy = () => {
       const item = report.getters.activeItem();
       if (!item) return;
       editor.actions.setClipboard(report.getters.copiedItem(item.uid));
-    },
-    paste () {
+    };
+    const paste = () => {
       if (!editor.state.clipboard) return;
 
       const targetCanvas = report.getters.activeOrFirstCanvas();
@@ -78,10 +76,22 @@ export default Vue.extend({
       if (!targetCanvas) return;
 
       report.actions.pasteItem({ targetType: targetCanvas.type, targetUid: targetCanvas.uid, item: editor.state.clipboard as CopiedAnyItem });
-    },
-    remove () {
+    };
+    const remove = () => {
       report.actions.removeActiveEntity();
-    }
+    };
+
+    return {
+      undoable,
+      redoable,
+      activeEntityExists,
+      undo,
+      redo,
+      cut,
+      copy,
+      paste,
+      remove
+    };
   }
 });
 </script>

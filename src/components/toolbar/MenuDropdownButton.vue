@@ -12,10 +12,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
-export default Vue.extend({
-  name: 'MenuDropdownButton',
+export default defineComponent({
   props: {
     text: {
       type: String,
@@ -30,10 +29,14 @@ export default Vue.extend({
       default: false
     }
   },
-  methods: {
-    click () {
-      this.$emit('click');
-    }
+  setup (_, { emit }) {
+    const click = () => {
+      emit('click');
+    };
+
+    return {
+      click
+    };
   }
 });
 </script>
