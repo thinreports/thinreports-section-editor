@@ -51,21 +51,21 @@ export default defineComponent({
     CanvasSelector
   },
   setup () {
+    const sections = computed(() => report.getters.sections());
     const sectionWithPositions = computed((): SectionWithPosition[] => {
-      const sections: {
+      const result: {
         schema: Section;
         top: number;
       }[] = [];
 
       let top = 0;
       sections.value.forEach(section => {
-        sections.push({ schema: section, top });
+        result.push({ schema: section, top });
         top = calcPlus(top, section.height);
       });
 
-      return sections;
+      return result;
     });
-    const sections = computed(() => report.getters.sections());
     const contentSize = computed((): Size => report.getters.contentSize());
 
     const activateSection = (uid: SectionUid) => {

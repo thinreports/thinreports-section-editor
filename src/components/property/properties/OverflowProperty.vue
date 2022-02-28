@@ -10,6 +10,7 @@
 <script lang="ts">
 import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { TextOverflowStyle } from '@/types';
 
 export default defineComponent({
@@ -23,11 +24,13 @@ export default defineComponent({
     }
   },
   setup (_, { emit }) {
+    const { i18n } = useI18n();
+
     const options = computed((): Option<TextOverflowStyle>[] => {
       return [
-        { label: this.$tc('label.text.overflow.truncate'), value: 'truncate' },
-        { label: this.$tc('label.text.overflow.fit'), value: 'fit' },
-        { label: this.$tc('label.text.overflow.expand'), value: 'expand' }
+        { label: i18n.value.tc('label.text.overflow.truncate'), value: 'truncate' },
+        { label: i18n.value.tc('label.text.overflow.fit'), value: 'fit' },
+        { label: i18n.value.tc('label.text.overflow.expand'), value: 'expand' }
       ];
     });
 

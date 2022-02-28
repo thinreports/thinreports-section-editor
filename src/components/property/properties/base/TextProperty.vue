@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick } from '@vue/composition-api';
+import { defineComponent, getCurrentInstance, nextTick } from '@vue/composition-api';
 
 export default defineComponent({
   props: {
@@ -34,13 +34,15 @@ export default defineComponent({
     }
   },
   setup (_, { emit }) {
+    const instance = getCurrentInstance();
+
     const change = async (value: string) => {
       emit('change', value);
 
       // When the value becomes the same as the current value due to rounding processing, etc.,
-      // the change cannot be detected, so the update is forcibly executed.
+      // the change cannot be detected, so the update is forcibly executedcak.
       await nextTick();
-      this.$forceUpdate();
+      instance?.proxy?.$forceUpdate();
     };
 
     return {

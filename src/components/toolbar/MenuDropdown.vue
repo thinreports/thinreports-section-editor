@@ -9,7 +9,7 @@
     </button>
 
     <div
-      ref="dropdown"
+      ref="refDropdown"
       uk-dropdown="mode: click"
       duration="0"
       delay-hide="0"
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import UIkit from 'uikit';
 import EditButtons from './EditButtons.vue';
 import FileButtons from './FileButtons.vue';
@@ -58,10 +58,12 @@ export default defineComponent({
     }
   },
   setup () {
+    const refDropdown = ref(null);
+
     const handleMenuButtonClick = (e: MouseEvent) => {
       if (!e.target || !(e.target as HTMLElement).closest('.th-menu-button')) return;
 
-      UIkit.dropdown(this.$refs.dropdown).hide();
+      UIkit.dropdown(refDropdown.value).hide();
     };
 
     return {
