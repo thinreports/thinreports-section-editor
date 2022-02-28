@@ -26,17 +26,17 @@ export default defineComponent({
   setup (props) {
     const { item } = toRefs(props);
 
-    const rx = computed((): number => {
-      return calcPlus(item.value.rx, extraSize.value);
-    });
-    const ry = computed((): number => {
-      return calcPlus(item.value.ry, extraSize.value);
-    });
     const strokeWidth = computed((): number => {
       return inverseScale(3, editor.getters.zoomRate());
     });
     const extraSize = computed((): number => {
       return calcPlus(calcDiv(item.value.style.borderWidth, 2), calcDiv(strokeWidth.value, 2));
+    });
+    const rx = computed((): number => {
+      return calcPlus(item.value.rx, extraSize.value);
+    });
+    const ry = computed((): number => {
+      return calcPlus(item.value.ry, extraSize.value);
     });
 
     return {

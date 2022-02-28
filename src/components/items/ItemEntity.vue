@@ -28,6 +28,12 @@ export default defineComponent({
       return editor.getters.isSelectMode();
     });
 
+    const emitItemClick = () => {
+      emit('itemClick');
+    };
+    const emitItemDrag = () => {
+      emit('itemDrag');
+    };
     const onPointerDown = () => {
       pointerDown.value = true;
       emitItemClick();
@@ -40,12 +46,6 @@ export default defineComponent({
     };
     const onPointerUp = () => {
       pointerDown.value = false;
-    };
-    const emitItemClick = () => {
-      emit('itemClick');
-    };
-    const emitItemDrag = () => {
-      emit('itemDrag');
     };
 
     return {

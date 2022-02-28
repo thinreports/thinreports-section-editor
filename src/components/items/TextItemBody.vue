@@ -1,6 +1,6 @@
 <template>
   <g>
-    <g ref="box">
+    <g ref="refBox">
       <text
         v-for="(text, index) in item.texts"
         :key="index"
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, nextTick, ref, toRefs, watch } from '@vue/composition-api';
 import { calcDiv, calcPlus, calcMul, calcMinus } from '../../lib/strict-calculator';
 import { report } from '../../store';
 import { TextItem } from '@/types';
@@ -47,31 +47,10 @@ export default defineComponent({
       required: true
     }
   },
-  watch: {
-    item: {
-      handler (newItem: TextItem, oldItem: TextItem) {
-        if (isAdjustingBoxWidthRequired(newItem, oldItem)) {
-          nextTick(() => adjustBoxWidth());
-        }
-      },
-      deep: true
-    }
-  },
   setup (props) {
     const { item } = toRefs(props);
+    const refBox = ref(null);
 
-    const textStyle = computed((): TextStyle => {
-      return {
-        fontSize: `${item.value.style.fontSize}px`,
-        fontFamily: item.value.style.fontFamily.join(','),
-        fill: item.value.style.color,
-        fontWeight: fontWeight.value,
-        fontStyle: fontStyle.value,
-        textDecoration: textDecoration.value,
-        textAnchor: textAnchor.value,
-        letterSpacing: letterSpacing.value
-      };
-    });
     const fontWeight = computed((): TextStyle['fontWeight'] => {
       return item.value.style.fontStyle.includes('bold') ? 'bold' : 'normal';
     });
@@ -102,6 +81,18 @@ export default defineComponent({
     const letterSpacing = computed((): TextStyle['letterSpacing'] => {
       return item.value.style.letterSpacing !== '' ? `${item.value.style.letterSpacing}px` : 'normal';
     });
+    const textStyle = computed((): TextStyle => {
+      return {
+        fontSize: `${item.value.style.fontSize}px`,
+        fontFamily: item.value.style.fontFamily.join(','),
+        fill: item.value.style.color,
+        fontWeight: fontWeight.value,
+        fontStyle: fontStyle.value,
+        textDecoration: textDecoration.value,
+        textAnchor: textAnchor.value,
+        letterSpacing: letterSpacing.value
+      };
+    });
     const calculatedX = computed((): number => {
       switch (textAnchor.value) {
         case 'start': return item.value.x;
@@ -123,7 +114,7 @@ export default defineComponent({
       return calcPlus(calculatedY.value, calcMul(item.value.style.lineHeight, index));
     };
     const adjustBoxWidth = () => {
-      const bbox = (this.$refs.box as SVGGElement).getBBox();
+      const bbox = (refBox.value! as SVGGElement).getBBox();
       report.actions.adjustTextItemWidth({ uid: item.value.uid, minWidth: bbox.width });
     };
     const isAdjustingBoxWidthRequired = (item: TextItem, prevItem: TextItem): boolean => {
@@ -140,10 +131,17 @@ export default defineComponent({
       );
     };
 
+    watch(item, (newItem: TextItem, oldItem: TextItem) => {
+      if (isAdjustingBoxWidthRequired(newItem, oldItem)) {
+        nextTick(() => adjustBoxWidth());
+      }
+    }, { deep: true });
+
     return {
       textStyle,
       calculatedX,
-      calculateTextLineY
+      calculateTextLineY,
+      refBox
     };
   }
 });

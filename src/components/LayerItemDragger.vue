@@ -60,6 +60,40 @@ export default defineComponent({
     });
     const draggerState = computed(() => operator.state.itemDragger);
 
+    const cancel = () => {
+      operator.actions.finishItemDrag();
+    };
+    const moveItemTo = (bounds: BoundingPoints) => {
+      if (!draggerState.value.itemUid || !itemType.value) throw new UnexpectedStateError();
+
+      const payload = { uid: draggerState.value.itemUid, bounds };
+
+      switch (itemType.value) {
+        case 'rect': report.actions.moveRectItemTo(payload); break;
+        case 'ellipse': report.actions.moveEllipseItemTo(payload); break;
+        case 'line': report.actions.moveLineItemTo(payload); break;
+        case 'image-block': report.actions.moveImageBlockItemTo(payload); break;
+        case 'image': report.actions.moveImageItemTo(payload); break;
+        case 'text': report.actions.moveTextItemTo(payload); break;
+        case 'text-block': report.actions.moveTextBlockItemTo(payload); break;
+        case 'stack-view': report.actions.moveStackViewItemTo(payload); break;
+        default:
+          throw new Error('Not Implemented');
+      }
+    };
+    const convertToReportCoords = (boundingPoints: BoundingPoints): BoundingPoints => {
+      const localTranslation = draggerState.value.translation;
+      if (!localTranslation) throw new UnexpectedStateError();
+
+      return new BoundsTransformer(boundingPoints).expand(localTranslation).toBPoints();
+    };
+    const convertToLocalCoords = (boundingPoints: BoundingPoints): BoundingPoints => {
+      const localTranslation = draggerState.value.translation;
+      if (!localTranslation) throw new UnexpectedStateError();
+
+      return new BoundsTransformer(boundingPoints).relativeFrom(localTranslation).toBPoints();
+    };
+
     const start = (e: MouseEvent) => {
       const point = transformSvgPoint.value(e);
 
@@ -101,39 +135,6 @@ export default defineComponent({
       moveItemTo(convertToLocalCoords(outlineBounds.value));
 
       operator.actions.finishItemDrag();
-    };
-    const cancel = () => {
-      operator.actions.finishItemDrag();
-    };
-    const moveItemTo = (bounds: BoundingPoints) => {
-      if (!draggerState.value.itemUid || !itemType.value) throw new UnexpectedStateError();
-
-      const payload = { uid: draggerState.value.itemUid, bounds };
-
-      switch (itemType.value) {
-        case 'rect': report.actions.moveRectItemTo(payload); break;
-        case 'ellipse': report.actions.moveEllipseItemTo(payload); break;
-        case 'line': report.actions.moveLineItemTo(payload); break;
-        case 'image-block': report.actions.moveImageBlockItemTo(payload); break;
-        case 'image': report.actions.moveImageItemTo(payload); break;
-        case 'text': report.actions.moveTextItemTo(payload); break;
-        case 'text-block': report.actions.moveTextBlockItemTo(payload); break;
-        case 'stack-view': report.actions.moveStackViewItemTo(payload); break;
-        default:
-          throw new Error('Not Implemented');
-      }
-    };
-    const convertToReportCoords = (boundingPoints: BoundingPoints): BoundingPoints => {
-      const localTranslation = draggerState.value.translation;
-      if (!localTranslation) throw new UnexpectedStateError();
-
-      return new BoundsTransformer(boundingPoints).expand(localTranslation).toBPoints();
-    };
-    const convertToLocalCoords = (boundingPoints: BoundingPoints): BoundingPoints => {
-      const localTranslation = draggerState.value.translation;
-      if (!localTranslation) throw new UnexpectedStateError();
-
-      return new BoundsTransformer(boundingPoints).relativeFrom(localTranslation).toBPoints();
     };
 
     return {

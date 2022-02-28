@@ -65,7 +65,8 @@ export default defineComponent({
     };
 
     return {
-      handleMenuButtonClick
+      handleMenuButtonClick,
+      refDropdown
     };
   }
 });

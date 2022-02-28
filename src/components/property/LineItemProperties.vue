@@ -96,6 +96,12 @@ export default defineComponent({
   setup (props) {
     const { item } = toRefs(props);
 
+    const isXDirectionPositive = computed((): boolean => {
+      return item.value.x1 < item.value.x2;
+    });
+    const isYDirectionPositive = computed((): boolean => {
+      return item.value.y1 < item.value.y2;
+    });
     const bounds = computed((): Bounds => {
       return {
         x: isXDirectionPositive.value ? item.value.x1 : item.value.x2,
@@ -103,12 +109,6 @@ export default defineComponent({
         width: round(Math.abs(item.value.x1 - item.value.x2)),
         height: round(Math.abs(item.value.y1 - item.value.y2))
       };
-    });
-    const isXDirectionPositive = computed((): boolean => {
-      return item.value.x1 < item.value.x2;
-    });
-    const isYDirectionPositive = computed((): boolean => {
-      return item.value.y1 < item.value.y2;
     });
 
     const updateId = (value: string) => {
@@ -119,6 +119,17 @@ export default defineComponent({
     };
     const updateDisplay = (value: boolean) => {
       report.actions.updateLineItem({ uid: item.value.uid, key: 'display', value });
+    };
+    const updateBounds = (bounds: Bounds) => {
+      report.actions.updateLineItemValues({
+        uid: item.value.uid,
+        values: [
+          { key: 'x1', value: isXDirectionPositive.value ? bounds.x : bounds.x + bounds.width },
+          { key: 'x2', value: isXDirectionPositive.value ? bounds.x + bounds.width : bounds.x },
+          { key: 'y1', value: isYDirectionPositive.value ? bounds.y : bounds.y + bounds.height },
+          { key: 'y2', value: isYDirectionPositive.value ? bounds.y + bounds.height : bounds.y }
+        ]
+      });
     };
     const updateX = (value: string) => {
       updateBounds({ ...bounds.value, x: Number(value) });
@@ -131,17 +142,6 @@ export default defineComponent({
     };
     const updateHeight = (value: string) => {
       updateBounds({ ...bounds.value, height: Number(value) });
-    };
-    const updateBounds = (bounds: Bounds) => {
-      report.actions.updateLineItemValues({
-        uid: item.value.uid,
-        values: [
-          { key: 'x1', value: isXDirectionPositive.value ? bounds.x : bounds.x + bounds.width },
-          { key: 'x2', value: isXDirectionPositive.value ? bounds.x + bounds.width : bounds.x },
-          { key: 'y1', value: isYDirectionPositive.value ? bounds.y : bounds.y + bounds.height },
-          { key: 'y2', value: isYDirectionPositive.value ? bounds.y + bounds.height : bounds.y }
-        ]
-      });
     };
     const updateFollowStretch = (value: LineItem['followStretch']) => {
       report.actions.updateLineItem({ uid: item.value.uid, key: 'followStretch', value });

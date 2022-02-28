@@ -57,38 +57,6 @@ export default defineComponent({
     });
     const drawerState = computed(() => operator.state.itemDrawer);
 
-    const start = (e: MouseEvent) => {
-      const point = transformSvgPoint.value(e);
-
-      outlineBounds.value = {
-        x1: point.x,
-        y1: point.y,
-        x2: point.x,
-        y2: point.y
-      };
-    };
-    const draw = (e: MouseEvent) => {
-      const point = transformSvgPoint.value(e);
-
-      if (!isStarted.value) start(e);
-      if (!outlineBounds.value) throw new UnexpectedStateError();
-
-      outlineBounds.value.x2 = point.x;
-      outlineBounds.value.y2 = point.y;
-    };
-    const finish = () => {
-      if (!isStarted.value || isOutlineEmpty()) {
-        cancel();
-        return;
-      }
-
-      if (!outlineBounds.value) throw new UnexpectedStateError();
-
-      drawNewItem(convertToLocalCoords(outlineBounds.value));
-
-      operator.actions.finishItemDraw();
-      editor.actions.activateTool({ tool: 'select' });
-    };
     const cancel = () => {
       operator.actions.finishItemDraw();
     };
@@ -124,6 +92,39 @@ export default defineComponent({
       if (!localTranslation) throw new UnexpectedStateError();
 
       return new BoundsTransformer(bPoints).relativeFrom(localTranslation).toBPoints();
+    };
+
+    const start = (e: MouseEvent) => {
+      const point = transformSvgPoint.value(e);
+
+      outlineBounds.value = {
+        x1: point.x,
+        y1: point.y,
+        x2: point.x,
+        y2: point.y
+      };
+    };
+    const draw = (e: MouseEvent) => {
+      const point = transformSvgPoint.value(e);
+
+      if (!isStarted.value) start(e);
+      if (!outlineBounds.value) throw new UnexpectedStateError();
+
+      outlineBounds.value.x2 = point.x;
+      outlineBounds.value.y2 = point.y;
+    };
+    const finish = () => {
+      if (!isStarted.value || isOutlineEmpty()) {
+        cancel();
+        return;
+      }
+
+      if (!outlineBounds.value) throw new UnexpectedStateError();
+
+      drawNewItem(convertToLocalCoords(outlineBounds.value));
+
+      operator.actions.finishItemDraw();
+      editor.actions.activateTool({ tool: 'select' });
     };
 
     return {

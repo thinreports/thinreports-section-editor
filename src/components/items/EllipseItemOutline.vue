@@ -25,17 +25,17 @@ export default defineComponent({
   setup (props) {
     const { boundingBox } = toRefs(props);
 
-    const cx = computed((): EllipseItem['cx'] => {
-      return boundingBox.value.x + rx.value;
-    });
-    const cy = computed((): EllipseItem['cy'] => {
-      return boundingBox.value.y + ry.value;
-    });
     const rx = computed((): EllipseItem['rx'] => {
       return boundingBox.value.width / 2;
     });
     const ry = computed((): EllipseItem['ry'] => {
       return boundingBox.value.height / 2;
+    });
+    const cx = computed((): EllipseItem['cx'] => {
+      return boundingBox.value.x + rx.value;
+    });
+    const cy = computed((): EllipseItem['cy'] => {
+      return boundingBox.value.y + ry.value;
     });
     const strokeWidth = computed((): number => {
       return inverseScale(1, editor.getters.zoomRate());

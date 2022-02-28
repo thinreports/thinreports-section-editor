@@ -30,6 +30,9 @@ export default defineComponent({
 
     const pointerDown = ref<boolean>(false);
 
+    const frameWidth = computed(() => {
+      return inverseScale(10, editor.getters.zoomRate());
+    });
     const bounds = computed((): BoundingBox => {
       return {
         x: itemBounds.value.x - frameWidth.value / 2,
@@ -38,10 +41,13 @@ export default defineComponent({
         height: itemBounds.value.height + frameWidth.value
       };
     });
-    const frameWidth = computed(() => {
-      return inverseScale(10, editor.getters.zoomRate());
-    });
 
+    const emitModifierClick = () => {
+      emit('modifierClick');
+    };
+    const emitModifierDrag = () => {
+      emit('modifierDrag');
+    };
     const onPointerDown = () => {
       pointerDown.value = true;
     };
@@ -56,12 +62,6 @@ export default defineComponent({
         emitModifierClick();
       }
       pointerDown.value = false;
-    };
-    const emitModifierClick = () => {
-      emit('modifierClick');
-    };
-    const emitModifierDrag = () => {
-      emit('modifierDrag');
     };
 
     return {

@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { report, operator, editor } from '../store';
 import SectionCanvasHighlighter from './SectionCanvasHighlighter.vue';
 import CanvasDrawer from './base/CanvasDrawer.vue';
@@ -71,18 +71,16 @@ export default defineComponent({
   setup (props) {
     const { section, top } = toRefs(props);
 
-    const pointerDown = ref(false);
-
     const paperSize = computed(() => report.getters.paperSize());
     const isDrawMode = computed(() => editor.getters.isDrawMode());
     const width = computed((): number => {
       return paperSize.value.width;
     });
-    const transform = computed((): string => {
-      return `translate(${Object.values(translation.value).join(',')})`;
-    });
     const translation = computed((): Coords => {
       return { x: 0, y: top.value };
+    });
+    const transform = computed((): string => {
+      return `translate(${Object.values(translation.value).join(',')})`;
     });
     const isActive = computed((): boolean => {
       return report.getters.isActiveSection(section.value.uid);

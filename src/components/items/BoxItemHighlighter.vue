@@ -36,6 +36,12 @@ export default defineComponent({
   setup (props) {
     const { itemBounds, itemStrokeWidth, itemBorderRadius } = toRefs(props);
 
+    const strokeWidth = computed((): number => {
+      return inverseScale(3, editor.getters.zoomRate());
+    });
+    const extraSize = computed((): number => {
+      return calcPlus(calcDiv(itemStrokeWidth.value, 2), calcDiv(strokeWidth.value, 2));
+    });
     const x = computed((): number => {
       return calcMinus(itemBounds.value.x, extraSize.value);
     });
@@ -47,12 +53,6 @@ export default defineComponent({
     });
     const height = computed((): number => {
       return calcPlus(itemBounds.value.height, calcMul(extraSize.value, 2));
-    });
-    const strokeWidth = computed((): number => {
-      return inverseScale(3, editor.getters.zoomRate());
-    });
-    const extraSize = computed((): number => {
-      return calcPlus(calcDiv(itemStrokeWidth.value, 2), calcDiv(strokeWidth.value, 2));
     });
     const radius = computed((): number => {
       return itemBorderRadius.value !== 0 ? itemBorderRadius.value + 1 : 0;

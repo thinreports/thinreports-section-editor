@@ -52,7 +52,7 @@
 
     <ToolButton
       description="Image"
-      @click="selectImage"
+      @click="openSelectImage"
     >
       <ItemIcon type="image" />
     </ToolButton>
@@ -105,7 +105,7 @@ export default defineComponent({
     const isActiveTool = (tool: ToolType) => {
       return activeTool.value === tool;
     };
-    const selectImage = async () => {
+    const openSelectImage = async () => {
       const targetCanvas = report.getters.activeOrFirstCanvas();
 
       if (!targetCanvas) return;
@@ -131,7 +131,7 @@ export default defineComponent({
     return {
       activateTool,
       isActiveTool,
-      selectImage
+      openSelectImage
     };
   }
 });

@@ -38,30 +38,7 @@ export default defineComponent({
     const newReport = () => {
       location.reload();
     };
-    const save = async () => {
-      const schema = report.getters.toSchemaJSON();
 
-      if (!validateSchema(schema)) return;
-
-      const currentFilename = metadata.getters.filename();
-
-      if (currentFilename === null) {
-        const filename = await electronAPI.saveSchemaFileAs(schema);
-        if (filename) {
-          root.actions.saveSchema(filename);
-        }
-      } else {
-        await electronAPI.saveSchemaFile(schema, currentFilename);
-        root.actions.saveSchema();
-      }
-    };
-    const open = async () => {
-      const file = await electronAPI.openSchemaFile();
-
-      if (file) {
-        root.actions.loadSchema(file.schema, file.filename);
-      }
-    };
     const validateSchema = (jsonString: string): boolean => {
       const ajv = new Ajv({
         multipleOfPrecision: 3
@@ -83,6 +60,32 @@ export default defineComponent({
       }
 
       return true;
+    };
+
+    const save = async () => {
+      const schema = report.getters.toSchemaJSON();
+
+      if (!validateSchema(schema)) return;
+
+      const currentFilename = metadata.getters.filename();
+
+      if (currentFilename === null) {
+        const filename = await electronAPI.saveSchemaFileAs(schema);
+        if (filename) {
+          root.actions.saveSchema(filename);
+        }
+      } else {
+        await electronAPI.saveSchemaFile(schema, currentFilename);
+        root.actions.saveSchema();
+      }
+    };
+
+    const open = async () => {
+      const file = await electronAPI.openSchemaFile();
+
+      if (file) {
+        root.actions.loadSchema(file.schema, file.filename);
+      }
     };
 
     return {

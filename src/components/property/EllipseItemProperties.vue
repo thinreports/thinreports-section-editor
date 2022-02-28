@@ -116,6 +116,10 @@ export default defineComponent({
     const updateDisplay = (value: boolean) => {
       report.actions.updateEllipseItem({ uid: item.value.uid, key: 'display', value });
     };
+    const updateBounds = (bounds: Bounds) => {
+      const bPoints = BoundsTransformer.fromBBox(bounds).toBPoints();
+      report.actions.updateEllipseItemBounds(item.value.uid, bPoints);
+    };
     const updateX = (value: string) => {
       updateBounds({ ...bounds.value, x: Number(value) });
     };
@@ -127,10 +131,6 @@ export default defineComponent({
     };
     const updateHeight = (value: string) => {
       updateBounds({ ...bounds.value, height: Number(value) });
-    };
-    const updateBounds = (bounds: Bounds) => {
-      const bPoints = BoundsTransformer.fromBBox(bounds).toBPoints();
-      report.actions.updateEllipseItemBounds(item.value.uid, bPoints);
     };
     const updateFollowStretch = (value: EllipseItem['followStretch']) => {
       report.actions.updateEllipseItem({ uid: item.value.uid, key: 'followStretch', value });

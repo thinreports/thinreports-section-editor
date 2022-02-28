@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { calcPlus } from '../../lib/strict-calculator';
 import { report, operator, editor } from '../../store';
 import CanvasDrawer from '../base/CanvasDrawer.vue';
@@ -67,14 +67,12 @@ export default defineComponent({
   setup (props) {
     const { row, bounds, sectionTranslation } = toRefs(props);
 
-    const pointerDown = ref(false);
-
     const isDrawMode = computed(() => editor.getters.isDrawMode());
-    const transform = computed((): string => {
-      return `translate(${Object.values(translation.value).join(',')})`;
-    });
     const translation = computed((): Translation => {
       return { x: bounds.value.x, y: bounds.value.y };
+    });
+    const transform = computed((): string => {
+      return `translate(${Object.values(translation.value).join(',')})`;
     });
     const translationByReport = computed((): Translation => {
       return {
