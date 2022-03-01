@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { report } from '../store';
 import { SectionUid } from '../types';
 import SectionNode from './tree-view/SectionNode.vue';

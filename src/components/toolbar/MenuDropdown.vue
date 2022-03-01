@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import UIkit from 'uikit';
 import EditButtons from './EditButtons.vue';
 import FileButtons from './FileButtons.vue';

@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, ref, toRefs } from 'vue';
 import { BoundsTransformer } from '../lib/bounds-transformer';
 import { operator, report, editor } from '../store';
 import ItemOutline from './items/ItemOutline.vue';

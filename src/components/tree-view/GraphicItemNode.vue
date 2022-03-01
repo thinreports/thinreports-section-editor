@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { Item } from '../../types';
 import ItemIcon from '../icons/ItemIcon.vue';
 import NodeButton from './NodeButton.vue';

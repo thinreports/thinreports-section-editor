@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 import { report } from '../../store';
 import { AnyItem, Section, ItemUid } from '../../types';
 import SectionIcon from '../icons/SectionIcon.vue';

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { ItemTextStyle } from '../../../types';
 import TextProperty from '@/components/property/properties/base/TextProperty.vue';
 

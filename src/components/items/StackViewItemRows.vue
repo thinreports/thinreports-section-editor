@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 import { DeepReadonly } from 'utility-types';
 import { report } from '../../store';
 import CanvasSelector from '../base/CanvasSelector.vue';

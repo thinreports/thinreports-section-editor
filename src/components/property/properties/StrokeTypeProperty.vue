@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import SelectProperty, { Option } from '@/components/property/properties/base/SelectProperty.vue';
 import { useI18n } from '@/composables/useI18n';
 import { ItemBorderStyle } from '@/types';

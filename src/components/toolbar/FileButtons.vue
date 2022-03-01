@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import Ajv from 'ajv';
 import UIkit from 'uikit';
 import { report, root, metadata } from '../../store';
