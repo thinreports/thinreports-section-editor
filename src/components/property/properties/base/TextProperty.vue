@@ -33,6 +33,7 @@ export default defineComponent({
       default: ''
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const instance = getCurrentInstance();
 

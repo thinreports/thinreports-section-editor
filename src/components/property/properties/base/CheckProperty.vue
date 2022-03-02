@@ -28,6 +28,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (props, { emit }) {
     const { value } = toRefs(props);
 

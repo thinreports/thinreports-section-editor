@@ -20,6 +20,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['select'],
   setup (_, { emit }) {
     const emitSelect = () => {
       emit('select');

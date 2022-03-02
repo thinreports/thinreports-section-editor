@@ -21,6 +21,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['itemClick', 'itemDrag'],
   setup (_, { emit }) {
     const pointerDown = ref<boolean>(false);
 

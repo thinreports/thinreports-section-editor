@@ -36,6 +36,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['activate'],
   setup (_, { emit }) {
     const emitActivate = () => {
       emit('activate');

@@ -47,6 +47,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['activate'],
   setup (props, { emit }) {
     const { rowUids } = toRefs(props);
 

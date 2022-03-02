@@ -25,6 +25,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['modifierClick', 'modifierDrag'],
   setup (props, { emit }) {
     const { itemBounds } = toRefs(props);
 

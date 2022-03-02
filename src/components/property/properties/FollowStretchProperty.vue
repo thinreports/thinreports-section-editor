@@ -26,6 +26,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['change'],
   setup (props, { emit }) {
     const { ignoreHeight } = toRefs(props);
 

@@ -25,6 +25,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['startDraw'],
   setup (_, { emit }) {
     const pointerDown = ref(false);
 

@@ -23,6 +23,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const { t } = useI18n();
 

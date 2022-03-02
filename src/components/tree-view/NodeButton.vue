@@ -27,6 +27,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['click'],
   setup (props, { emit }) {
     const { name, id } = toRefs(props);
 

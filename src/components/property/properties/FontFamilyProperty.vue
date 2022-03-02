@@ -22,6 +22,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const options = computed((): Option<BuiltinFontFamily>[] => {
       return [

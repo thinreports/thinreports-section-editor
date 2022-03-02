@@ -35,6 +35,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['itemDragStart'],
   setup (props, { emit }) {
     const { item } = toRefs(props);
 

@@ -20,6 +20,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const update = (value: string) => {
       emit('change', value);

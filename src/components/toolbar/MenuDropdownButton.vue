@@ -29,6 +29,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['click'],
   setup (_, { emit }) {
     const click = () => {
       emit('click');
