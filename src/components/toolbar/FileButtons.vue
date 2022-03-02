@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
 import Ajv from 'ajv';
 import UIkit from 'uikit';
+import { defineComponent } from 'vue';
 import { report, root, metadata } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';

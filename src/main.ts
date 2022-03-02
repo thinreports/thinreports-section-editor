@@ -1,5 +1,4 @@
-import VueCompotisionAPI from '@vue/composition-api';
-import Vue from 'vue';
+import { createApp } from 'vue';
 import App from './App.vue';
 import i18n from './i18n';
 import { root } from './store';
@@ -7,13 +6,10 @@ import '@mdi/font/css/materialdesignicons.min.css';
 import 'uikit/dist/css/uikit.min.css';
 import 'uikit/dist/js/uikit.min.js';
 
-Vue.config.productionTip = false;
-Vue.use(VueCompotisionAPI);
+const app = createApp(App);
 
-new Vue({
-  i18n,
-  render: h => h(App)
-}).$mount('#app');
+app.use(i18n);
+app.mount('#app');
 
 // Watch store for development
 if (process.env.NODE_ENV !== 'production') {
@@ -21,11 +17,14 @@ if (process.env.NODE_ENV !== 'production') {
   dummyElement.id = '_storeDummyEntry';
   document.body.appendChild(dummyElement);
 
-  new Vue({
+  createApp({
     name: 'StoreDummyComponent',
     computed: {
       state: () => root.state
     },
-    render: h => h()
-  }).$mount('#_storeDummyEntry');
+    // To suppress the "Component is missing template or render function." warning
+    render () {
+      return undefined;
+    }
+  }).mount('#_storeDummyEntry');
 }

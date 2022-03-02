@@ -26,8 +26,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
 import { DeepReadonly } from 'utility-types';
+import { computed, defineComponent, toRefs } from 'vue';
 import { report } from '../../store';
 import CanvasSelector from '../base/CanvasSelector.vue';
 import StackViewItemRow from './StackViewItemRow.vue';

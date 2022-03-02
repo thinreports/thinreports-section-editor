@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import UIkit from 'uikit';
+import { defineComponent, ref } from 'vue';
 import EditButtons from './EditButtons.vue';
 import FileButtons from './FileButtons.vue';
 import LocationButtons from './LocationButtons.vue';
