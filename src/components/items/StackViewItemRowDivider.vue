@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 import { calcPlus } from '../../lib/strict-calculator';
 import { inverseScale } from '@/lib/inverse-scale';
 import { editor } from '@/store';

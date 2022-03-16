@@ -15,14 +15,15 @@
   </div>
 </template>
 
-<script>
+<script type="ts'">
+import { defineComponent } from 'vue';
 import FontPreloader from './components/FontPreloader.vue';
 import PropertyPane from './components/PropertyPane.vue';
 import ReportPane from './components/ReportPane.vue';
 import ToolbarPane from './components/ToolbarPane.vue';
 import TreeViewPane from './components/TreeViewPane.vue';
 
-export default {
+export default defineComponent({
   name: 'App',
   components: {
     ReportPane,
@@ -31,7 +32,7 @@ export default {
     FontPreloader,
     TreeViewPane
   }
-};
+});
 </script>
 
 <style>

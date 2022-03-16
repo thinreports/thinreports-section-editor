@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { ItemTextStyle } from '../../../types';
 import TextProperty from '@/components/property/properties/base/TextProperty.vue';
 
@@ -21,6 +21,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const update = (value: string) => {
       emit('change', value);

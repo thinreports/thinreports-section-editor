@@ -32,7 +32,7 @@ describe('deep-change-case', () => {
           ]
         ],
         null: null,
-        undefined: undefined,
+        undefined,
         empty: {}
       }
     )).toStrictEqual(
@@ -65,7 +65,7 @@ describe('deep-change-case', () => {
           ]
         ],
         null: null,
-        undefined: undefined,
+        undefined,
         empty: {}
       }
     );
@@ -107,7 +107,7 @@ describe('deep-change-case', () => {
           ]
         ],
         null: null,
-        undefined: undefined,
+        undefined,
         empty: {}
       }
     )).toStrictEqual(
@@ -140,7 +140,7 @@ describe('deep-change-case', () => {
           ]
         ],
         null: null,
-        undefined: undefined,
+        undefined,
         empty: {}
       }
     );
