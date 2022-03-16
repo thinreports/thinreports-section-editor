@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import TextAreaProperty from './base/TextAreaProperty.vue';
 
 export default defineComponent({
@@ -20,7 +20,6 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
     const update = (value: string) => {
       emit('change', value);

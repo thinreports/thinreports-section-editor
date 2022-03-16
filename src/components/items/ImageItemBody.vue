@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { ImageItem } from '@/types';
 
 export default defineComponent({

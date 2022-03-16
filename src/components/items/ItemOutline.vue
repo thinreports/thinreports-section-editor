@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { BoundsTransformer } from '../../lib/bounds-transformer';
 import BoxItemOutline from './BoxItemOutline.vue';
 import EllipseItemOutline from './EllipseItemOutline.vue';

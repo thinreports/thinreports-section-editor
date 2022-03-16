@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs } from 'vue';
+import { computed, defineComponent, ref, toRefs } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '../../store';
 import { BoundingBox } from '@/types';
@@ -25,7 +25,6 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['modifierClick', 'modifierDrag'],
   setup (props, { emit }) {
     const { itemBounds } = toRefs(props);
 

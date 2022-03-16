@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { TextOverflowStyle } from '@/types';
 
 export default defineComponent({
@@ -23,15 +23,14 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
-    const { t } = useI18n();
+    const { i18n } = useI18n();
 
     const options = computed((): Option<TextOverflowStyle>[] => {
       return [
-        { label: t('label.text.overflow.truncate'), value: 'truncate' },
-        { label: t('label.text.overflow.fit'), value: 'fit' },
-        { label: t('label.text.overflow.expand'), value: 'expand' }
+        { label: i18n.value.tc('label.text.overflow.truncate'), value: 'truncate' },
+        { label: i18n.value.tc('label.text.overflow.fit'), value: 'fit' },
+        { label: i18n.value.tc('label.text.overflow.expand'), value: 'expand' }
       ];
     });
 

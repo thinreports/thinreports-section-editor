@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import { report } from '../../store';
 import ItemEntity from './ItemEntity.vue';
 import LineItemBody from './LineItemBody.vue';
@@ -35,7 +35,6 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['itemDragStart'],
   setup (props, { emit }) {
     const { item } = toRefs(props);
 

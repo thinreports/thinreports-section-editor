@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { history, editor, report } from '../../store';
 import { CopiedAnyItem } from '../../types';
 import MenuDropdownButton from './MenuDropdownButton.vue';

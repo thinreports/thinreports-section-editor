@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { TextWordWrapStyle } from '@/types';
 
 export default defineComponent({
@@ -23,14 +23,13 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
-    const { t } = useI18n();
+    const { i18n } = useI18n();
 
     const options = computed((): Option<TextWordWrapStyle>[] => {
       return [
-        { label: t('label.text.word_wrap_none'), value: 'none' },
-        { label: t('label.text.word_wrap_break_word'), value: 'break-word' }
+        { label: i18n.value.tc('label.text.word_wrap_none'), value: 'none' },
+        { label: i18n.value.tc('label.text.word_wrap_break_word'), value: 'break-word' }
       ];
     });
 

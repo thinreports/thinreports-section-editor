@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from 'vue';
+import { computed, defineComponent, toRefs } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
 import { Item } from '@/types';
 
@@ -26,7 +26,6 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['change'],
   setup (props, { emit }) {
     const { ignoreHeight } = toRefs(props);
 

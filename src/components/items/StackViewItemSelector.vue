@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { StackViewItem } from '@/types';
 
 export default defineComponent({

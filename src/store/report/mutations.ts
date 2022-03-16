@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { MutationsBase } from '../base/mutations-base';
 import { computeTextFontAndLineSize } from '../lib/text-font-and-line-size';
 import TextBlockItemBuilder from './builders/text-block-item-builder';
@@ -139,7 +140,7 @@ export class Mutations extends MutationsBase<Report> {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'rect') throw this.entityNotFoundError('Rect', uid);
 
-    this.state.entities.items[uid] = roundRectItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundRectItem({ ...item, [key]: value }));
   }
 
   updateEllipseItem <K extends keyof EllipseItem> ({ uid, key, value }: { uid: ItemUid; key: K; value: EllipseItem[K]}) {
@@ -153,7 +154,7 @@ export class Mutations extends MutationsBase<Report> {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'line') throw this.entityNotFoundError('Line', uid);
 
-    this.state.entities.items[uid] = roundLineItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundLineItem({ ...item, [key]: value }));
   }
 
   // TODO: Deprecated. Use #updateTextItemWithBuild instead.
@@ -162,28 +163,28 @@ export class Mutations extends MutationsBase<Report> {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'text') throw this.entityNotFoundError('Text', uid);
 
-    this.state.entities.items[uid] = roundTextItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundTextItem({ ...item, [key]: value }));
   }
 
   updateTextItemWithBuild ({ uid, builder }: { uid: ItemUid; builder: TextItemBuilder }) {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'text') throw this.entityNotFoundError('Text', uid);
 
-    this.state.entities.items[uid] = builder.build();
+    Vue.set(this.state.entities.items, uid, builder.build());
   }
 
   updateImageBlockItem <K extends keyof ImageBlockItem> ({ uid, key, value }: { uid: ItemUid; key: K; value: ImageBlockItem[K]}) {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'image-block') throw this.entityNotFoundError('ImageBlock', uid);
 
-    this.state.entities.items[uid] = roundImageBlockItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundImageBlockItem({ ...item, [key]: value }));
   }
 
   updateImageItem <K extends keyof ImageItem> ({ uid, key, value }: { uid: ItemUid; key: K; value: ImageItem[K]}) {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'image') throw this.entityNotFoundError('Image', uid);
 
-    this.state.entities.items[uid] = roundImageItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundImageItem({ ...item, [key]: value }));
   }
 
   // TODO: Deprecated. Use #updateTextBlockItemWithBuild instead.
@@ -192,14 +193,14 @@ export class Mutations extends MutationsBase<Report> {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'text-block') throw this.entityNotFoundError('TextBlock', uid);
 
-    this.state.entities.items[uid] = roundTextBlockItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundTextBlockItem({ ...item, [key]: value }));
   }
 
   updateTextBlockItemWithBuild ({ uid, builder }: { uid: ItemUid; builder: TextBlockItemBuilder }) {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'text-block') throw this.entityNotFoundError('TextBlock', uid);
 
-    this.state.entities.items[uid] = builder.build();
+    Vue.set(this.state.entities.items, uid, builder.build());
   }
 
   updateTextFontAndLineSize ({ uid, fontSize, lineHeightRatio }: { uid: ItemUid; fontSize: FontAndLineSize['fontSize']; lineHeightRatio: FontAndLineSize['lineHeightRatio'] }) {
@@ -247,14 +248,14 @@ export class Mutations extends MutationsBase<Report> {
     const item = this.state.entities.items[uid];
     if (!item || item.type !== 'stack-view') throw this.entityNotFoundError('Item', uid);
 
-    this.state.entities.items[uid] = roundStackViewItem({ ...item, [key]: value });
+    Vue.set(this.state.entities.items, uid, roundStackViewItem({ ...item, [key]: value }));
   }
 
   updateStackViewRow <K extends keyof StackViewRow> ({ uid, key, value }: {uid: StackViewRowUid; key: K; value: StackViewRow[K]}) {
     const row = this.state.entities.stackViewRows[uid];
     if (!row) throw this.entityNotFoundError('StackViewRow', uid);
 
-    this.state.entities.stackViewRows[uid] = roundStackViewRow({ ...row, [key]: value });
+    Vue.set(this.state.entities.stackViewRows, uid, roundStackViewRow({ ...row, [key]: value }));
   }
 
   bringItemLayerTo ({ uid, destination }: { uid: ItemUid; destination: 'front' | 'forward' | 'back' | 'backward' }) {

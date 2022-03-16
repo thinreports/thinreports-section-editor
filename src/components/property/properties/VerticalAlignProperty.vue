@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { VerticalAlign } from '@/types';
 
 export default defineComponent({
@@ -23,15 +23,14 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
-    const { t } = useI18n();
+    const { i18n } = useI18n();
 
     const options = computed((): Option<VerticalAlign>[] => {
       return [
-        { label: t('label.align.vertical.top'), value: 'top' },
-        { label: t('label.align.vertical.middle'), value: 'middle' },
-        { label: t('label.align.vertical.bottom'), value: 'bottom' }
+        { label: i18n.value.tc('label.align.vertical.top'), value: 'top' },
+        { label: i18n.value.tc('label.align.vertical.middle'), value: 'middle' },
+        { label: i18n.value.tc('label.align.vertical.bottom'), value: 'bottom' }
       ];
     });
 

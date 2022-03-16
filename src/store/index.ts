@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import Vue from 'vue';
 import { Store as EditorStore } from './editor';
 import { Store as HistoryStore } from './history';
 import { Store as MetadataStore } from './metadata';
@@ -7,7 +7,7 @@ import { Store as ReportStore } from './report';
 import { Store as RootStore } from './root';
 import { RootState } from '@/types';
 
-const rootState: RootState = reactive({
+const rootState: RootState = Vue.observable({
   report: ReportStore.createState(),
   history: HistoryStore.createState(),
   operator: OperatorStore.createState(),

@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance, nextTick } from 'vue';
+import { defineComponent, getCurrentInstance, nextTick } from '@vue/composition-api';
 
 export default defineComponent({
   props: {
@@ -33,7 +33,6 @@ export default defineComponent({
       default: ''
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
     const instance = getCurrentInstance();
 

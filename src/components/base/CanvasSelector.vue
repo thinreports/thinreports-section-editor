@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { BoundingBox } from '@/types';
 
 export default defineComponent({
@@ -20,7 +20,6 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['select'],
   setup (_, { emit }) {
     const emitSelect = () => {
       emit('select');
