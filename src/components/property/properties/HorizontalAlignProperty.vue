@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, defineComponent } from '@vue/composition-api';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
+import { useI18n } from '@/composables/useI18n';
 import { HorizontalAlign } from '@/types';
 
 export default defineComponent({
@@ -23,15 +23,14 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
-    const { t } = useI18n();
+    const { i18n } = useI18n();
 
     const options = computed((): Option<HorizontalAlign>[] => {
       return [
-        { label: t('label.align.horizontal.left'), value: 'left' },
-        { label: t('label.align.horizontal.center'), value: 'center' },
-        { label: t('label.align.horizontal.right'), value: 'right' }
+        { label: i18n.value.tc('label.align.horizontal.left'), value: 'left' },
+        { label: i18n.value.tc('label.align.horizontal.center'), value: 'center' },
+        { label: i18n.value.tc('label.align.horizontal.right'), value: 'right' }
       ];
     });
 

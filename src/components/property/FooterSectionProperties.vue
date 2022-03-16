@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from 'vue';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import PropertyCaption from './PropertyCaption.vue';
 import AutoStretchProperty from './properties/AutoStretchProperty.vue';
 import DisplayProperty from './properties/DisplayProperty.vue';

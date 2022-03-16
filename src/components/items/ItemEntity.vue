@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from '@vue/composition-api';
 import { editor } from '../../store';
 import { AnyItem } from '@/types';
 
@@ -21,7 +21,6 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['itemClick', 'itemDrag'],
   setup (_, { emit }) {
     const pointerDown = ref<boolean>(false);
 

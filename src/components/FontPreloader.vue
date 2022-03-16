@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
   setup () {

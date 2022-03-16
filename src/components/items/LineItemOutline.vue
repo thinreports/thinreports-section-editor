@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { inverseScale } from '../../lib/inverse-scale';
 import { editor } from '@/store';
 import { BoundingPoints } from '@/types';

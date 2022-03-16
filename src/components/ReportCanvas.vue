@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { calcPlus } from '../lib/strict-calculator';
 import { report } from '../store';
 import SectionCanvas from './SectionCanvas.vue';

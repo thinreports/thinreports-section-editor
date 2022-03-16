@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import ItemIdLabel from './ItemIdLabel.vue';
 import { TextBlockItem } from '@/types';
 

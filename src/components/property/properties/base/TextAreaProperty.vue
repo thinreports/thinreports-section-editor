@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
   props: {
@@ -28,7 +28,6 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['change'],
   setup (_, { emit }) {
     const change = (value: string) => {
       emit('change', value);

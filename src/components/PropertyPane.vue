@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent } from '@vue/composition-api';
 import { report } from '../store';
 import ItemProperties from './property/ItemProperties.vue';
 import SectionProperties from './property/SectionProperties.vue';

@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 import { editor } from '../../store';
 import MenuDropdownButton from './MenuDropdownButton.vue';
 import MenuDropdownSubTree from './MenuDropdownSubTree.vue';

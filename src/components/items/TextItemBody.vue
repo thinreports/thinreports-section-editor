@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, ref, toRefs, watch } from 'vue';
+import { computed, defineComponent, nextTick, ref, toRefs, watch } from '@vue/composition-api';
 import { calcDiv, calcPlus, calcMul, calcMinus } from '../../lib/strict-calculator';
 import { report } from '../../store';
 import { TextItem } from '@/types';
