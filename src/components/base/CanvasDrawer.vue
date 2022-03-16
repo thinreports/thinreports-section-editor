@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   props: {
@@ -25,6 +25,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['startDraw'],
   setup (_, { emit }) {
     const pointerDown = ref(false);
 

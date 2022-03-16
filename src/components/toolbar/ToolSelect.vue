@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import { selectImage } from '../../lib/select-image';
 import { editor, report } from '../../store';
 import ItemIcon from '../icons/ItemIcon.vue';

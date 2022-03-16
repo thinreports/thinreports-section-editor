@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import { Item } from '../../types';
 import ItemIcon from '../icons/ItemIcon.vue';
 import NodeButton from './NodeButton.vue';
@@ -36,6 +36,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['activate'],
   setup (_, { emit }) {
     const emitActivate = () => {
       emit('activate');

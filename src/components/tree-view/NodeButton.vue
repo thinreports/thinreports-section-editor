@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 
 export default defineComponent({
   props: {
@@ -27,6 +27,7 @@ export default defineComponent({
       default: false
     }
   },
+  emits: ['click'],
   setup (props, { emit }) {
     const { name, id } = toRefs(props);
 

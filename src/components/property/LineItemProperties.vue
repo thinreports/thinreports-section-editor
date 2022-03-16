@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 import { round } from '../../lib/round-float-values';
 import PropertyCaption from './PropertyCaption.vue';
 import AffectBottomMarginProperty from './properties/AffectBottomMarginProperty.vue';
