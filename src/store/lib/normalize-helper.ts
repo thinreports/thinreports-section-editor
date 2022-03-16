@@ -4,6 +4,6 @@ export const setNormalizedValue = (entities: { [key: string]: any }, keys: strin
 };
 
 export const deleteNormalizedValue = (entities: { [key: string]: any }, keys: string[], uid: string) => {
-  delete entities.uid;
-  delete keys[keys.indexOf(uid)];
+  delete entities[uid];
+  keys.splice(keys.indexOf(uid), 1);
 };
