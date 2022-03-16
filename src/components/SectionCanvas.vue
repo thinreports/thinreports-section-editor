@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 import { report, operator, editor } from '../store';
 import SectionCanvasHighlighter from './SectionCanvasHighlighter.vue';
 import CanvasDrawer from './base/CanvasDrawer.vue';

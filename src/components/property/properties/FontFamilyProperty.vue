@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
 import SelectProperty, { Option } from './base/SelectProperty.vue';
 import { BuiltinFontFamily } from '@/types';
 
@@ -22,6 +22,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const options = computed((): Option<BuiltinFontFamily>[] => {
       return [

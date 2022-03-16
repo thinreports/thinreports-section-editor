@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, toRefs } from '@vue/composition-api';
+import { computed, defineComponent, toRefs } from 'vue';
 import { report } from '../../store';
 import BoxItemHighlighter from './BoxItemHighlighter.vue';
 import ImageBlockItemBody from './ImageBlockItemBody.vue';
@@ -32,6 +32,7 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['itemDragStart'],
   setup (props, { emit }) {
     const { item } = toRefs(props);
 

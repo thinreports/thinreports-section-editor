@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import TextProperty from './base/TextProperty.vue';
 
 export default defineComponent({
@@ -21,6 +21,7 @@ export default defineComponent({
       default: ''
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
     const update = (value: string) => {
       emit('change', value);

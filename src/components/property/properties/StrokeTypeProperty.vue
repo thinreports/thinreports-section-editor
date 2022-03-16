@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@vue/composition-api';
+import { computed, defineComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 import SelectProperty, { Option } from '@/components/property/properties/base/SelectProperty.vue';
-import { useI18n } from '@/composables/useI18n';
 import { ItemBorderStyle } from '@/types';
 
 export default defineComponent({
@@ -23,14 +23,15 @@ export default defineComponent({
       required: true
     }
   },
+  emits: ['change'],
   setup (_, { emit }) {
-    const { i18n } = useI18n();
+    const { t } = useI18n();
 
     const options = computed((): Option<ItemBorderStyle['borderStyle']>[] => {
       return [
-        { label: i18n.value.tc('label.stroke.type.solid'), value: 'solid' },
-        { label: i18n.value.tc('label.stroke.type.dashed'), value: 'dashed' },
-        { label: i18n.value.tc('label.stroke.type.dotted'), value: 'dotted' }
+        { label: t('label.stroke.type.solid'), value: 'solid' },
+        { label: t('label.stroke.type.dashed'), value: 'dashed' },
+        { label: t('label.stroke.type.dotted'), value: 'dotted' }
       ];
     });
 

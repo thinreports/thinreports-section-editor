@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onBeforeMount, onMounted, ref } from '@vue/composition-api';
+import { computed, defineComponent, nextTick, onBeforeMount, onMounted, ref } from 'vue';
 import { calcDiv, calcMinus, calcMul } from '../lib/strict-calculator';
 import { Translation, Size, Coords } from '../types';
 import LayerItemDragger from './LayerItemDragger.vue';
