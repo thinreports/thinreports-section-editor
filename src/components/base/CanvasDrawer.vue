@@ -6,13 +6,11 @@
     :height="height"
     class="th-canvas-drawer"
     @pointerdown="onPointerDown"
-    @pointermove="onPointerMove"
-    @pointerup="onPointerUp"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
@@ -27,28 +25,12 @@ export default defineComponent({
   },
   emits: ['startDraw'],
   setup (_, { emit }) {
-    const pointerDown = ref(false);
-
-    const emitStartDraw = () => {
-      emit('startDraw');
-    };
     const onPointerDown = () => {
-      pointerDown.value = true;
-    };
-    const onPointerMove = () => {
-      if (pointerDown.value) {
-        emitStartDraw();
-        pointerDown.value = false;
-      }
-    };
-    const onPointerUp = () => {
-      pointerDown.value = false;
+      emit('startDraw');
     };
 
     return {
-      onPointerDown,
-      onPointerMove,
-      onPointerUp
+      onPointerDown
     };
   }
 });
