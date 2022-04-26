@@ -42,7 +42,7 @@
     "@vue/cli-service": "~5.0.4",
     "@vue/eslint-config-typescript": "^10.0.0",
     "@vue/test-utils": "^2.0.0-rc.21",
-    "@vue/vue3-jest": "^27.0.0-alpha.4",
+    "@vue/vue3-jest": "^27.0.0",
     "babel-jest": "^27.0.6",
     "cross-env": "^7.0.3",
     "electron": "^18.1.0",
