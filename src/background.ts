@@ -5,7 +5,6 @@ import os from 'os';
 import path from 'path';
 import { app, protocol, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -65,9 +64,9 @@ async function createWindow () {
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
     if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
-    createProtocol('app');
     // Load the index.html when not in development
-    win.loadURL('app://./index.html');
+    // eslint-disable-next-line n/no-path-concat
+    win.loadURL(`file://${__dirname}/index.html`);
   }
 
   if (!isDevelopment) {
