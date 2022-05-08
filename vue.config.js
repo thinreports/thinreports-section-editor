@@ -22,6 +22,9 @@ module.exports = defineConfig({
           icon: 'build/icon.ico'
         }
       },
+      // This setting is for a workaround for the problem that assets like font file are not being loaded.
+      // https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1647
+      customFileProtocol: './',
       preload: 'src/preload.ts'
     },
     i18n: {
