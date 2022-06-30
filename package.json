@@ -15,7 +15,7 @@
     "test:lint": "vue-cli-service lint --no-fix"
   },
   "dependencies": {
-    "@mdi/font": "^6.7.96",
+    "@mdi/font": "^6.8.96",
     "@types/lodash.clonedeep": "^4.5.7",
     "ajv": "^8.11.0",
     "bignumber.js": "^9.0.2",
