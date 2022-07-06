@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable vue/no-v-text-v-html-on-component -->
   <text
     :x="x"
     :y="y"

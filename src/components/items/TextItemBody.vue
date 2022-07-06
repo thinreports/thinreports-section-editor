@@ -1,6 +1,7 @@
 <template>
   <g>
     <g ref="refBox">
+      <!-- eslint-disable vue/no-v-text-v-html-on-component -->
       <text
         v-for="(text, index) in item.texts"
         :key="index"
