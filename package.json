@@ -15,7 +15,7 @@
     "test:lint": "vue-cli-service lint --no-fix"
   },
   "dependencies": {
-    "@mdi/font": "^6.9.96",
+    "@mdi/font": "^7.0.96",
     "@types/lodash.clonedeep": "^4.5.7",
     "ajv": "^8.11.0",
     "bignumber.js": "^9.0.2",
@@ -33,7 +33,7 @@
     "@types/electron-devtools-installer": "^2.2.2",
     "@types/jest": "^27.4.0",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.33.1",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-eslint": "~5.0.8",
@@ -47,7 +47,7 @@
     "cross-env": "^7.0.3",
     "electron": "^19.0.9",
     "electron-devtools-installer": "^3.2.0",
-    "eslint": "^8.20.0",
+    "eslint": "^8.22.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
