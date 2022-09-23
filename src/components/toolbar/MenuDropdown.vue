@@ -18,7 +18,7 @@
       @click="handleMenuButtonClick"
     >
       <ul
-        class="uk-nav uk-dropdown-nav uk-nav-default uk-nav-parent-icon"
+        class="uk-nav uk-dropdown-nav uk-nav-default"
         uk-nav
       >
         <FileButtons />

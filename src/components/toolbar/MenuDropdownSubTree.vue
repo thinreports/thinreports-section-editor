@@ -3,7 +3,7 @@
     <a
       href="#"
       @click.prevent
-    >{{ title }}</a>
+    >{{ title }} <span uk-nav-parent-icon /></a>
     <ul class="uk-nav-sub">
       <slot />
     </ul>
