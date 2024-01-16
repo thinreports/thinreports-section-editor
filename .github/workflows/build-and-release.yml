@@ -23,7 +23,7 @@ jobs:
             package-ext: .exe
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build package
         uses: ./.github/actions/build-package
@@ -34,15 +34,15 @@ jobs:
           mv dist_electron/*${{ matrix.package-ext }} package/
 
       - name: Upload to artifact if not tagged
-        uses: actions/upload-artifact@v2
-        if: "!startsWith(github.ref, 'refs/tags')"
+        uses: actions/upload-artifact@v4
+        if: ${{ ! startsWith(github.ref, 'refs/tags') }}
         with:
           name: ${{ matrix.os }}
           path: "package/*${{ matrix.package-ext }}"
 
       - name: Release if tagged
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
           files: "package/**"
         env:

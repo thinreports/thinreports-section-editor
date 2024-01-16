@@ -2,6 +2,9 @@ name: Test
 
 on:
   push:
+    branches:
+      - main
+      - "dev**"
   pull_request:
   workflow_dispatch:
 
@@ -9,16 +12,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Run this build only on either pull request or push.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
-
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v4
       with:
-        node-version: '16.x'
+        node-version: '16'
 
     - name: Build and test with lint
       run: |
