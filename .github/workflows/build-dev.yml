@@ -46,7 +46,7 @@ jobs:
             core.setOutput('PACKAGE_NAME', path.basename(packagePath, '${{ matrix.package-ext }}'));
 
       - name: Deploy development build
-        uses: WebFreak001/deploy-nightly@v3.0.0
+        uses: WebFreak001/deploy-nightly@v3.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
